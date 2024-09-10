@@ -1,6 +1,6 @@
 {
     'name': "New_res_partner",
-    'version': '1.0',
+    'version': '17.0.1.0',
     'depends': ['base','sms'],
     'category': 'App',
     'application': False,
@@ -19,4 +19,6 @@
             'New_res_partner/static/src/css/custom_styles.css',
         ],
     },
+    'installable': True,
+    'application': True,
 }
