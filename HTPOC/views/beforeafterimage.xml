@@ -1,0 +1,39 @@
+<odoo>
+    <data>
+        <!-- Improvement Record Tree View -->
+        <record id="view_beforeafterimage_tree" model="ir.ui.view">
+            <field name="name">beforeafterimage.tree</field>
+            <field name="model">beforeafterimage</field>
+            <field name="arch" type="xml">
+                <tree string="Improvement Records">
+                    <field name="name" string="改善照片說明"/>
+                    <field name="photo_before" widget="image"/>
+                    <field name="name2" string="改善後說明"/>
+                    <field name="photo_after" widget="image"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Improvement Record Form View -->
+        <record id="view_beforeafterimage_form" model="ir.ui.view">
+            <field name="name">beforeafterimage.form</field>
+            <field name="model">beforeafterimage</field>
+            <field name="arch" type="xml">
+                <form string="改善照片記錄">
+                    <sheet>
+                        <group>
+                            <group string="改善前">
+                                <field name="name" placeholder="請輸入改善前照片說明"/>
+                                <field name="photo_before" widget="image" options="{'size': [300, 300]}" />
+                            </group>
+                            <group string="改善後">
+                                <field name="name2" placeholder="請輸入改善後照片說明"/>
+                                <field name="photo_after" widget="image" options="{'size': [300, 300]}" />
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_htpoc_missingrecords,access_htpoc_missingrecords,model_htpoc_missingrecords,base.group_user,1,1,1,1
+access_htpoc_missingrecords_type,access_htpoc_missingrecords_type,model_htpoc_missingrecords_type,base.group_user,1,1,1,1
+access_htpoc_classification,access_htpoc_classification,model_htpoc_classification,base.group_user,1,1,1,1
+access_classification_level,access_classification_level,model_classification_level,base.group_user,1,1,1,1
+access_beforeafterimage,access_beforeafterimage,model_beforeafterimage,base.group_user,1,1,1,1

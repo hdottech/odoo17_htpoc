@@ -1,0 +1,41 @@
+<odoo>
+    <data>
+        <!-- Tree View -->
+        <record id="view_htpoc_missingrecords_type_tree" model="ir.ui.view">
+            <field name="name">htpoc.missingrecords.type.tree</field>
+            <field name="model">htpoc.missingrecords.type</field>
+            <field name="arch" type="xml">
+                <tree string="Htpoc Missingrecords Type">
+                    <field name="name" placeholder="請輸入系統名稱"/>
+                    <field name="sequence"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="view_htpoc_missingrecords_type_form" model="ir.ui.view">
+            <field name="name">htpoc.missingrecords.type.form</field>
+            <field name="model">htpoc.missingrecords.type</field>
+            <field name="arch" type="xml">
+                <form string="Htpoc Missingrecords Type">
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="description"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="htpoc_missingrecords_type_action" model="ir.actions.act_window">
+            <field name="name">Htpoc Missingrecords 缺失系統</field>
+            <field name="res_model">htpoc.missingrecords.type</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+    </data>
+</odoo>
+
+
+

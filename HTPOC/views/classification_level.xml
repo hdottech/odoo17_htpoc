@@ -1,0 +1,41 @@
+<odoo>
+    <data>
+        <!-- Tree View -->
+        <record id="view_classification_level_tree" model="ir.ui.view">
+            <field name="name">classification_level.tree</field>
+            <field name="model">classification_level</field>
+            <field name="arch" type="xml">
+                <tree string="Htpoc Classification Level">
+                    <field name="name" placeholder="缺失等級" required="True"/>
+                    <field name="level" string="缺失等級說明"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="view_classification_level_form" model="ir.ui.view">
+            <field name="name">classification_level.form</field>
+            <field name="model">classification_level</field>
+            <field name="arch" type="xml">
+                <form string="Htpoc Classification Level">
+                    <sheet>
+                        <group>
+                            <field name="name" placeholder="缺失等級"/>
+                            <field name="level" string="缺失等級說明"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="classification_level_action" model="ir.actions.act_window">
+            <field name="name">Htpoc Classification Level 缺失等級</field>
+            <field name="res_model">classification_level</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+    </data>
+</odoo>
+
+
+

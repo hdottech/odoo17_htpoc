@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Tree View -->
+        <record id="view_htpoc_missingrecords_tree" model="ir.ui.view">
+            <field name="name">htpoc.missingrecords.tree</field>
+            <field name="model">htpoc.missingrecords</field>
+            <field name="arch" type="xml">
+                <tree string="Missing Records List">
+                    <field name="create_date" string="紀錄時間"/>
+                    <field name="cycle" string="週期"/>
+                    <field name="main_contractor" string="主承攬商"/>
+                    <field name="system_name" string="系統"/>
+                    <field name="brief" string="缺失簡述"/>
+                    <field name="classification" string="缺失等級分類"/>
+                    <field name="classification_color" string="缺失分類顏色"/>
+                    <field name="classification_level" string="缺失等級"/>
+                    <field name="company" string="公司名稱"/>
+                    <field name="contact" string="聯絡人"/>
+                    <field name="principal" string="負責人"/>
+                    <field name="state" widget="badge" 
+                            decoration-info="state == 'initiate'"
+                            decoration-success="state == 'completed'"
+                            decoration-primary="state == 'in_process'"
+                            decoration-danger="state == 'cancel'"/>
+                </tree>
+            </field>
+        </record>
+        
+        <!-- Form View -->
+        <record id="view_htpoc_missingrecords_form" model="ir.ui.view">
+            <field name="name">htpoc.missingrecords.form</field>
+            <field name="model">htpoc.missingrecords</field>
+            <field name="arch" type="xml">
+                <form string="Missing Records Form">
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="initiate,in_process,completed"/>
+                    </header>
+                    <sheet>
+                        <div>
+                            <h1 style="text-decoration:underline">
+                                <field name="brief" string="缺失簡述" placeholder="缺失簡述" required="True" options="{'no_create': True}" />
+                                <hr />
+                            </h1>
+                            <h2>
+                                <field name="company" string="公司名稱" placeholder="公司名稱" required="True" readonly="1"/>
+                            </h2>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <group>
+                                    <field name="contact" string="聯絡人" />
+                                    <field name="phone" string="連絡電話" widget="phone"/>
+                                    <field name="email" string="電子信箱" widget="email"/>
+                                    <field name="system_name" string="系統"/>
+                                    <field name="cycle" string="週期"/>
+                                    <field name="main_contractor" string="主承攬商" options="{'no_create': True}"/>
+                                    <field name="deputy_contractor" string="副承攬商" options="{'no_create': True}"/>
+                                    <field name="security_person"/>
+                                    <field name="security_person_tel" widget="phone"/>
+                                    <field name="create_date" string="紀錄時間"/>
+                                    <field name="write_date" string="最後更新表單的時間"/>
+                                    <field name="content" string="詳細缺失內容" placeholder="請輸入詳細缺失內容"/>
+                                    
+                                </group>
+                            </div>
+                            <div class="col-lg-6">
+                                <group>                            
+                                    <field name="principal" string="負責人"/>
+                                    <field name="classification" string="缺失等級分類"/>
+                                    <field name="classification_color" string="缺失分類顏色"/>
+                                    <field name="classification_level" string="缺失等級"/>
+                                    <field name="classification_common" string="缺失等級說明"/>
+                                    <field name="floor" string="樓層"/>
+                                    <field name="pillar" string="柱位"/>
+                                    <field name="feeback" string="回報"/>
+                                    <field name="penalties" string="罰則"/>
+                                    <field name="improve" string="現場立即改善措施"/>
+                                    <field name="improveDT" string="改善措施與時間"/>
+                                    <field name="sign" widget="signature"/>
+                                    <field name="sign2" widget="signature"/>
+                                </group>
+                            </div>
+                        </div>
+                        <notebook>
+                            <page string="改善紀錄">
+                                <field name="improvement_record_ids">
+                                    <tree string="Improvement Records">
+                                        <field name="name" string="改善前說明" style="width:20%;"/>
+                                        <field name="photo_before" widget="image" string="改善前照片" style="width:25%;"/>
+                                        <field name="name2" string="改善後說明" style="width:20%;"/>
+                                        <field name="photo_after" widget="image" string="改善後照片" style="width:25%;"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <!-- 郵件發送與關注者 -->
+                    <div class="oe_chatter"> 
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread" string='發送訊息'/>
+                        <field name="activity_ids" widget="mail_activity" string='活動'/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_htpoc_missingrecords_search" model="ir.ui.view">
+            <field name="name">htpoc.missingrecords.search</field>
+            <field name="model">htpoc.missingrecords</field>
+            <field name="arch" type="xml">
+                <search string="Missing Records Search">
+                    <!-- 基本搜索字段 -->
+                    <field name="create_uid" string="創建者"/>
+                    <field name="create_date" string="創建日期"/>
+
+                    <!-- 基本過濾器 -->
+                    <filter string="我的 Missing Records" name="my_records" domain="[('principal', '=', uid)]"/>
+                    <filter string="本月創建" name="create_date" date="create_date" default_period="this_month"/>
+
+                    <!-- 基本分組 -->
+                    <group expand="0" string="分組依據">
+                        <filter string="業務夥伴" name="company" context="{'group_by': 'company'}"/>
+                        <filter string="負責人" name="principal" context="{'group_by': 'principal'}"/>
+                        <filter string="階段" name="state" context="{'group_by': 'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="htpoc_action" model="ir.actions.act_window">
+            <field name="name">缺失紀錄表</field>
+            <field name="res_model">htpoc.missingrecords</field>
+            <field name="view_mode">tree,form</field>
+            <!-- <field name="context">{'search_default_my_records': 1}</field> -->
+        </record>
+    </data>
+</odoo>
+

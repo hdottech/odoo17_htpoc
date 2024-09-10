@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <menuitem id="htpoc_missing_records_menu_root" name="HTPOC 缺失紀錄" sequence="0"/>
+
+    <!-- 缺失紀錄子菜單 -->
+    <menuitem id="htpoc_master_data_menu" 
+              name="缺失紀錄" 
+              parent="htpoc_missing_records_menu_root"
+              sequence="1"/>
+
+    <menuitem id="htpoc_missingrecords_action" 
+              action="htpoc_action" 
+              parent="htpoc_master_data_menu"
+              sequence="1"/>
+
+    <!-- 配置子菜單 -->
+    <menuitem id="htpoc_menu_configuration" name="配置" parent="htpoc_missing_records_menu_root" sequence="2"/>
+
+    <menuitem id="htpoc_missingrecords_type_menu_action" 
+              action="htpoc_missingrecords_type_action" 
+              parent="htpoc_menu_configuration"/>
+
+    <menuitem id="htpoc_classification_menu_action" 
+              action="htpoc_classification_action" 
+              parent="htpoc_menu_configuration"/>
+
+    <menuitem id="classification_level_menu_action" 
+              action="classification_level_action"
+              parent="htpoc_menu_configuration"/>
+
+    <!-- API 配置菜單 -->
+    <menuitem id="api_menu" name="API 配置" parent="htpoc_missing_records_menu_root" sequence="3"/>
+    <menuitem id="api_user_token_menu_action" action="users_token_action" parent="api_menu"/> 
+</odoo>
