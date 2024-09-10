@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_partner_form_inherited" model="ir.ui.view">
+            <field name="name">res.partner.form.inherited</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <!-- 隱藏頁面 -->
+                <!-- 隱藏地址類型下拉選單 -->
+                <xpath expr="//field[@name='type']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//span[@name='address_name']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+                <!-- 隱藏地址類型標籤 -->
+                <xpath expr="//label[@for='street']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+                <!-- 隱藏整個地址欄位區域 -->
+                <xpath expr="//div[@class='o_address_format']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+                <!-- 隱藏地址標籤 -->
+                <xpath expr="//label[@for='street']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+                <!-- <xpath expr="//page[@name='contact_addresses']" position="attributes">
+                    <attribute name="invisible">not is_company</attribute>
+                </xpath> -->
+                <xpath expr="//page[@name='sales_purchases']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//page[@name='internal_notes']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+                <!-- 隱藏或移除原位置不需要的字段 -->
+                <xpath expr="//field[@name='title']" position="replace"/>
+                <xpath expr="//field[@name='category_id']" position="replace"/>
+                <xpath expr="//field[@name='vat']" position="attributes">
+                    <attribute name="invisible">not is_company</attribute>
+                </xpath>
+                <xpath expr="//field[@name='lang']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+                <!-- 在左側group添加字段 -->
+                <xpath expr="//group/group[1]/span[@name='address_name']" position="before">
+                    <field name="new_function" placeholder="例如: 銷售總監" invisible="is_company"/>
+                    <field name="title" string="稱謂" options='{"no_open": True}' placeholder="例如: 先生"
+                                invisible="is_company"/>
+                    <field name="category_id" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"
+                                   placeholder='例如,"B2B"、"VIP"、"諮詢"......'/>
+                    <field name="gender" widget="radio" options="{'horizontal': true}" invisible="is_company"/>
+                    <field name="id_number" invisible="is_company"/>
+                    <field name="blood_type" invisible="is_company"/>
+                    <field name="birthday" invisible="is_company"/>
+                    <field name="age" invisible="is_company"/>
+                    <field name="emergency_contact" invisible="is_company"/>
+                    <field name="emergency_relationship" invisible="is_company"/>
+                    <field name="emergency_number" invisible="is_company"/>
+                    <field name="address" />
+                </xpath>
+
+                <!-- 在右側group添加字段 -->
+                <xpath expr="//group/group[2]/field[@name='function']" position="replace">
+                    <field name="admission" widget="statusbar" options="{'clickable': '1'}" statusbar_visible="no,yes"/>
+                </xpath>
+                <xpath expr="//field[@name='website']" position="replace">
+                    <field name="main_contractor"/>
+                    <field name="sub_contractor"/>
+                    <field name="under_contractor"/>
+                    <field name="work_type"/>
+                    <field name="industrial_safety_personnel"/>
+                    <field name="industrial_safety_mobile" readonly="1"/>
+                    <field name="physical_examination_date" invisible="is_company"/>
+                    <field name="next_physical_examination_date" invisible="is_company"/>
+                    <field name="next_physical_examination_status" widget="badge"
+                            decoration-success="next_physical_examination_status == 'valid'"
+                            decoration-danger="next_physical_examination_status == 'expired'"
+                            invisible="is_company"/>
+                    <field name="Six_hour_class_date" invisible="is_company"/>
+                    <field name="six_hour_class_expiry_date" invisible="is_company"/>
+                    <field name="six_hour_class_status"
+                            widget="badge"
+                            decoration-success="six_hour_class_status == 'valid'"
+                            decoration-danger="six_hour_class_status == 'expired'"
+                            invisible="is_company"/>
+                    <field name="hazard_notification_class_date" invisible="is_company"/>
+                    <field name="hazard_notification_class_expiry_date" invisible="is_company"/>
+                    <field name="hazard_notification_class_status" 
+                            widget="badge"
+                            decoration-success="hazard_notification_class_status == 'valid'"
+                            decoration-danger="hazard_notification_class_status == 'expired'" 
+                            invisible="is_company"/>
+                </xpath>
+
+                <!-- 添加頁面 -->
+                <xpath expr="//page[@name='internal_notes']" position="after">
+                    <page string="辦證提交資料" name="document" invisible="is_company">
+                        <group>
+                            <group>
+                                <field name="id_photo_front" widget="image" class="new_oe_avatar"/>
+                                <field name="id_photo_back" widget="image" class="new_oe_avatar"/>
+                                <field name="mug_shot" widget="image" class="new_oe_avatar"/>
+                                <field name="life_mug_shot_01" widget="image" class="new_oe_avatar"/>
+                                <field name="life_mug_shot_02" widget="image" class="new_oe_avatar"/>
+                                <field name="life_mug_shot_03" widget="image" class="new_oe_avatar"/>
+                                <field name="life_mug_shot_04" widget="image" class="new_oe_avatar"/>
+                            </group>
+                            <group>
+                                <field name="construction_six_hour"/>
+                                <field name="physical_examination_form"/>
+                                <field name="labor_insurance"/>
+                                <field name="hazzard_notification"/>
+                                <field name="personal_date_consent_form"/>
+                                <field name="security_cutoff_letter"/>
+                                <field name="health_commitment"/>
+                                <field name="foreigner_entry_certificate"/>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+                <xpath expr="//notebook" position="inside">
+                    <page string="入場資訊">
+                        <field name="no_entry_reason_ids">
+                            <tree editable="bottom">
+                                <field name="date" width="33%"/>
+                                <field name="reason" width="67%"/>
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+
+                <!-- 隱藏 type 字段，但保留其值，並更改為聯絡人 -->
+                <field name="type" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                    <attribute name="force_save">1</attribute>
+                </field>
+            </field>
+        </record>
+
+        <!-- 在聯絡人清單裡顯示新欄位 -->
+        <record id="view_partner_tree_inherit" model="ir.ui.view">
+            <field name="name">res.partner.tree.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_tree" />
+            <field name="arch" type="xml">
+                <xpath expr="//tree/field[@name='display_name']" position="after">
+                    <field name="new_function" optional="show"/>
+                    <field name="gender" optional="show"/>
+                    <field name="id_number" optional="show"/>
+                    <field name="blood_type" optional="show"/>
+                    <field name="birthday" optional="show"/>
+                    <field name="emergency_contact" optional="show"/>
+                    <field name="emergency_relationship" optional="show"/>
+                    <field name="emergency_number" optional="show"/>
+                    <field name="admission" optional="show"/>
+                    <field name="main_contractor" optional="show"/>
+                    <field name="sub_contractor" optional="show"/>
+                    <field name="under_contractor" optional="show"/>
+                    <field name="work_type" optional="show"/>
+                    <field name="industrial_safety_personnel" optional="show"/>
+                    <field name="industrial_safety_mobile" optional="show"/>
+                    <field name="physical_examination_date" optional="show"/>
+                    <field name="Six_hour_class_date" optional="show"/>
+                    <field name="hazard_notification_class_date" optional="show"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

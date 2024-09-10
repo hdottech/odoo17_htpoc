@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- 树状视图 -->
+        <record id="view_new_res_partner_function_tree" model="ir.ui.view">
+            <field name="name">new.res.partner.function.tree</field>
+            <field name="model">new.res.partner.function</field>
+            <field name="arch" type="xml">
+                <tree string="職位列表">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- 动作 -->
+        <record id="action_new_res_partner_function" model="ir.actions.act_window">
+            <field name="name">職位</field>
+            <field name="res_model">new.res.partner.function</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- 菜单项 -->
+        <menuitem id="menu_new_res_partner_function"
+                  name="職位"
+                  action="action_new_res_partner_function"
+                  parent="contacts.res_partner_menu_config"
+                  sequence="0"/>
+    </data>
+</odoo>

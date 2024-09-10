@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="print_employee_badge_corrected" inherit_id="hr.print_employee_badge">
+        <xpath expr="." position="replace">
+            <t t-name="hr.print_employee_badge">
+                <t t-call="web.basic_layout">
+                    <div class="page">
+                        <t t-foreach="docs" t-as="employee">
+                            <div class="col-md-6">
+                                <table style="width:190pt; height:295pt; border: 1pt solid black; border-collapse:separate; border-radius:8pt; margin:1pt">
+                                    <!-- Logo 區域 -->
+                                    <tr style="height:25%"> <!-- 调整 Logo 区域高度 -->
+                                        <td align="center" valign="center">
+                                            <span t-if="employee.company_id.logo">
+                                                <img t-att-src="image_data_uri(employee.company_id.logo)" style="max-height:50pt;max-width:90%; margin-top:5pt;" alt="Company Logo"/> <!-- 调整 Logo 的 margin-top 以向下移动 -->
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <!-- 員工照片 -->
+                                    <tr style="height:40%;"> <!-- 增加照片区域的高度比例 -->
+                                        <td align="center" valign="top">
+                                            <img t-att-src="image_data_uri(employee.image_1920)" style="max-height:110pt;max-width:100%; margin-top:0pt" alt="Employee Image"/> <!-- 调整照片大小 -->
+                                        </td>
+                                    </tr>
+                                    <!-- 員工姓名和職位 -->
+                                    <tr style="height:15%">
+                                        <td align="center">
+                                            <div style="font-size:14pt; margin-bottom:2pt;" align="center">
+                                                <span t-field="employee.name"/>
+                                            </div>
+                                            <div align="center" style="font-size:10pt;">
+                                                <span t-field="employee.job_title"/>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <!-- 條碼 -->
+                                    <tr style="height:30%">
+                                        <td align="center" valign="bottom">
+                                            <div t-if="employee.barcode" 
+                                                    t-field="employee.barcode" 
+                                                    t-options="{
+                                                    'widget': 'barcode', 
+                                                    'type': 'Code128',
+                                                    'width': 1600, 
+                                                    'height': 300, 
+                                                    'img_style': 'max-height:70pt; max-width:100%; width:100% !important;', 
+                                                    'img_align': 'center'
+                                                }"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </t>
+                    </div>
+                </t>
+            </t>
+        </xpath>
+    </template>
+</odoo>
