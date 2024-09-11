@@ -37,7 +37,7 @@ class NewResPartner(models.Model):
     admission=fields.Selection([
         ('no', '不可入場'),
         ('yes', '可入場')
-        ], string='可否入場', compute='_compute_admission', store=True)
+        ], string='可否入場', compute='_compute_admission', store=True, default='no')
     main_contractor=fields.Many2one('new.res.partner.company', string="主承攬商")
     sub_contractor=fields.Many2one('new.res.partner.company', string="次承攬商")
     under_contractor=fields.Many2one('new.res.partner.company', string="下包商")
