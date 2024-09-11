@@ -276,6 +276,6 @@ class NewResPartner(models.Model):
 
     #     _logger.info("Finished send_expiration_notifications")
 
-    @api.model
-    def _cron_send_expiration_notifications(self):
-        self.send_expiration_notifications()
+    # @api.model
+    # def _cron_send_expiration_notifications(self):
+    #     self.send_expiration_notifications()
