@@ -1,7 +1,7 @@
 {
     'name': "New_res_partner",
     'version': '17.0.1.0',
-    'depends': ['base','sms'],
+    'depends': ['base','sms','contacts'],
     'category': 'App',
     'application': False,
     'installable':True,
