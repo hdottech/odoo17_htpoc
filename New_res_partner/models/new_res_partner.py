@@ -182,12 +182,12 @@ class NewResPartner(models.Model):
     def _compute_admission(self):
         today = fields.Date.today()
         for record in self:
-            if (record.next_physical_examination_date and record.next_physical_examination_date < today) or \
-               (record.six_hour_class_expiry_date and record.six_hour_class_expiry_date < today) or \
-               (record.hazard_notification_class_expiry_date and record.hazard_notification_class_expiry_date < today):
-                record.admission = 'no'
-            else:
+            if (record.next_physical_examination_date and record.next_physical_examination_date >= today) and \
+               (record.six_hour_class_expiry_date and record.six_hour_class_expiry_date >= today) and \
+               (record.hazard_notification_class_expiry_date and record.hazard_notification_class_expiry_date >= today):
                 record.admission = 'yes'
+            else:
+                record.admission = 'no'
 
     # 檢查課程到期狀態
     @api.depends('next_physical_examination_date', 'six_hour_class_expiry_date', 'hazard_notification_class_expiry_date')
