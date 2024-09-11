@@ -19,8 +19,7 @@ class NewResPartner(models.Model):
         ('male', '男'),
         ('female', '女'),
         ], string='性別')
-    id_number=fields.Char(string="身分證字號", copy= False )
-    #id_number=fields.Char(string="身分證字號",required=True, copy= False )
+    id_number=fields.Char(string="身分證字號",required=True, copy= False )
     #_sql_constraints = [
     #    ('unique_id_number', 'UNIQUE(id_number)', '身分證字號必須是唯一的！請確認此人是否已經存在於名單內！'),
     #]
