@@ -84,8 +84,7 @@ class NewResPartner(models.Model):
 
 
     #檢查身分證字號是否是唯一的
-    #@api.constrains('id_number')
-
+    @api.constrains('id_number')
     def _check_id_number(self):
         for record in self:
             if record.id_number:
