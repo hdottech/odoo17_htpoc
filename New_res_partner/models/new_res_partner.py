@@ -19,10 +19,11 @@ class NewResPartner(models.Model):
         ('male', '男'),
         ('female', '女'),
         ], string='性別')
-    id_number=fields.Char(string="身分證字號",required=True, copy= False )
-    _sql_constraints = [
-        ('unique_id_number', 'UNIQUE(id_number)', '身分證字號必須是唯一的！請確認此人是否已經存在於名單內！'),
-    ]
+    id_number=fields.Char(string="身分證字號", copy= False )
+    #id_number=fields.Char(string="身分證字號",required=True, copy= False )
+    #_sql_constraints = [
+    #    ('unique_id_number', 'UNIQUE(id_number)', '身分證字號必須是唯一的！請確認此人是否已經存在於名單內！'),
+    #]
     blood_type=fields.Selection([    
         ('A', 'A型'),
         ('B', 'B型'),
@@ -84,7 +85,7 @@ class NewResPartner(models.Model):
 
 
     #檢查身分證字號是否是唯一的
-    @api.constrains('id_number')
+    #@api.constrains('id_number')
 
     def _check_id_number(self):
         for record in self:
