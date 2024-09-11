@@ -12,7 +12,7 @@
         'views/new_res_partner_work_type_view.xml',
         'views/new_res_partner_function_view.xml',
         'security/ir.model.access.csv',
-        'data/ir_cron_data.xml',
+        #'data/ir_cron_data.xml',
     ],
     'assets': {
         'web.assets_backend': [
