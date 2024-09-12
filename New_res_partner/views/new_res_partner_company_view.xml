@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- 树状视图 -->
+        <!-- Tree -->
         <record id="view_new_res_partner_company_tree" model="ir.ui.view">
             <field name="name">new.res.partner.company.tree</field>
             <field name="model">new.res.partner.company</field>
@@ -12,14 +12,14 @@
             </field>
         </record>
 
-        <!-- 动作 -->
+        <!-- Action -->
         <record id="action_new_res_partner_company" model="ir.actions.act_window">
             <field name="name">承攬廠商</field>
             <field name="res_model">new.res.partner.company</field>
             <field name="view_mode">tree,form</field>
         </record>
 
-        <!-- 菜单项 -->
+        <!-- Menu -->
         <menuitem id="menu_new_res_partner_company"
                   name="承攬廠商"
                   action="action_new_res_partner_company"
