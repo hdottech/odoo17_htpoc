@@ -198,83 +198,58 @@ class NewResPartner(models.Model):
             record.six_hour_class_status = 'valid' if record.six_hour_class_expiry_date and record.six_hour_class_expiry_date >= today else 'expired'
             record.hazard_notification_class_status = 'valid' if record.hazard_notification_class_expiry_date and record.hazard_notification_class_expiry_date >= today else 'expired'
 
-    # @api.depends('last_physical_examination_date')
-    # def _compute_next_examination_date(self):
-    #     for employee in self:
-    #         if employee.last_physical_examination_date:
-    #             employee.next_physical_examination_date = employee.last_physical_examination_date + relativedelta(years=1)
+    # 自動發送信件
+    def action_send_email(self):
+        template = self.env.ref("New_res_partner.email_template")  # 取得郵件模板
+        company_email = self.env.res.company.email
 
-    # @api.depends('Six_hour_class_date', 'hazard_notification_class_date')
-    # def _compute_class_expiration(self):
-    #     for record in self:
-    #         if record.Six_hour_class_date:
-    #             record.six_hour_class_expiry_date = record.Six_hour_class_date + relativedelta(years=3)
-    #         if record.hazard_notification_class_date:
-    #             record.hazard_notification_class_expiry_date = record.hazard_notification_class_date + relativedelta(years=3)
+        for partner in self:
+            email_values = {
+                "email_to": partner.email,
+                "email_cc": company_email,
+                "auto_delete": True,
+                "recipient_ids": [],
+                "partner_ids": [],
+                "scheduled_date": False,
+                "email_from": company_email,
+            }
+            template.send_mail(partner.id, email_values=email_values, force_send=True)
 
-    # def send_expiration_notifications(self):
-    #     _logger.info("Starting send_expiration_notifications")
-    #     today = fields.Date.today()
-    #     one_month_later = today + relativedelta(months=1)
-    #     _logger.info(f"Today: {today}, One month later: {one_month_later}")
-        
-    #     employees_to_notify = self.search([
-    #         '|', '|',
-    #         ('next_physical_examination_date', '<=', one_month_later),
-    #         ('six_hour_class_expiry_date', '<=', one_month_later),
-    #         ('hazard_notification_class_expiry_date', '<=', one_month_later)
-    #     ])
-    #     _logger.info(f"Found {len(employees_to_notify)} employees to notify")
+    @api.model
+    def _cron_check_expirations(self):
+        today = fields.Date.today()
+        one_month_later = today + relativedelta(months=1)
 
-    #     company_email = self.env.company.email
-    #     if not company_email:
-    #         _logger.error("Company email is not set")
-    #         return
+        partners_to_notify = self.search([
+            '|', '|',
+            ('next_physical_examination_date', '<=', one_month_later),
+            ('six_hour_class_expiry_date', '<=', one_month_later),
+            ('hazard_notification_class_expiry_date', '<=', one_month_later)
+        ])
 
-    #     for employee in employees_to_notify:
-    #         _logger.info(f"Processing employee: {employee.name}")
-    #         if employee.email:
-    #             expiring_items = []
-    #             if employee.next_physical_examination_date and employee.next_physical_examination_date <= one_month_later:
-    #                 expiring_items.append('體檢')
-    #             if employee.six_hour_class_expiry_date and employee.six_hour_class_expiry_date <= one_month_later:
-    #                 expiring_items.append('六小時上課')
-    #             if employee.hazard_notification_class_expiry_date and employee.hazard_notification_class_expiry_date <= one_month_later:
-    #                 expiring_items.append('危害告知上課')
+        for partner in partners_to_notify:
+            expiring_items = []
+            if partner.next_physical_examination_date and partner.next_physical_examination_date <= one_month_later:
+                expiring_items.append('體檢')
+            if partner.six_hour_class_expiry_date and partner.six_hour_class_expiry_date <= one_month_later:
+                expiring_items.append('六小時上課')
+            if partner.hazard_notification_class_expiry_date and partner.hazard_notification_class_expiry_date <= one_month_later:
+                expiring_items.append('危害告知上課')
 
-    #             if expiring_items:
-    #                 subject = f"員工 {employee.name} 的 {', '.join(expiring_items)} 即將到期"
-    #                 body = f"""
-    #                 尊敬的 {employee.name}，
+            if expiring_items:
+                partner.action_send_email()
 
-    #                 請注意，您的以下項目即將在一個月內到期：
-
-    #                 {', '.join(expiring_items)}
-
-    #                 請盡快安排相關更新。
-
-    #                 此致，
-    #                 人力資源部
-    #                 """
-
-    #                 try:
-    #                     self.env['mail.mail'].create({
-    #                         'subject': subject,
-    #                         'body_html': body,
-    #                         'email_from': res.company.email,
-    #                         'email_to': res.partner.email,
-    #                         'auto_delete': False,
-    #                     }).send()
-    #                     _logger.info(f"Notification email sent to {employee.name} at {employee.email}")
-    #                 except Exception as e:
-    #                     _logger.error(f"Failed to send email to {employee.name}: {str(e)}")
-    #             else:
-    #                 _logger.info(f"No expiring items for {employee.name}")
-    #         else:
-    #             _logger.warning(f"No email address for {employee.name}")
-
-    #     _logger.info("Finished send_expiration_notifications")
-
-    # @api.model
-    # def _cron_send_expiration_notifications(self):
-    #     self.send_expiration_notifications()
+    # 在您的模型中添加這個方法
+    def init(self):
+        # 創建一個每週運行的 cron 作業
+        self.env['ir.cron'].sudo().create({
+            'name': 'Check Partner Expirations',
+            'model_id': self.env['ir.model'].search([('model', '=', 'res.partner')]).id,
+            'state': 'code',
+            'code': 'model._cron_check_expirations()',
+            'interval_number': 1,
+            'interval_type': 'weeks',
+            'numbercall': -1,
+            'doall': False,
+            'active': True,
+        })

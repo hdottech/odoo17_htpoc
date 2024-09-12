@@ -2,6 +2,7 @@
     'name': '漢唐集成缺失記錄',
     'version': '1.0',
     'category': 'APP',
+    'license': 'LGPL-3',
     'summary': 'HTPOC 漢唐集成缺失記錄',
     'description': 'Module for managing missing records',
     'depends': ['base','web','mail','New_res_partner','sms'],
@@ -14,6 +15,7 @@
         'views/beforeafterimage.xml',
         'views/users.xml',
         #'data/res_users_data.xml',
+        'data/email_template.xml',
             
 
         # 'views/users.xml',
