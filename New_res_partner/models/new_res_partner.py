@@ -201,7 +201,7 @@ class NewResPartner(models.Model):
     # 自動發送信件
     def action_send_email(self):
         template = self.env.ref("New_res_partner.email_template")  # 取得郵件模板
-        company_email = self.env.res.company.email
+        company_email = self.env.company.email
 
         for partner in self:
             email_values = {

@@ -1,32 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data noupdate="1">
+        <record id="ir_cron_check_expirations" model="ir.cron">
+            <field name="name">Send Expiration Notifications</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_check_expirations()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">weeks</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False"/>
+            <field name="active" eval="True"/>
+        </record>
+
         <record id="email_template_expiration_notification" model="mail.template">
             <field name="name">Expiration Notification</field>
-            <field name="model_id" ref="New_res_partner.model_New_res_partner"/>
+            <field name="model_id" ref="base.model_res_partner"/>
             <field name="subject">重要通知：您的證件即將到期</field>
             <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
             <field name="email_to">{{ object.email_formatted }}</field>
             <field name="body_html" type="html">
-                <div style="margin: 0px; padding: 0px;">
-                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
-                        尊敬的 {{ object.name }}，<br/><br/>
-                        請注意，您的以下項目即將在一個月內到期：<br/><br/>
-                        {% if object.next_physical_examination_date and object.next_physical_examination_date <= (datetime.date.today() + relativedelta(months=1)) %}
-                            - 體檢 (到期日期: {{ object.next_physical_examination_date }})<br/>
-                        {% endif %}
-                        {% if object.six_hour_class_expiry_date and object.six_hour_class_expiry_date <= (datetime.date.today() + relativedelta(months=1)) %}
-                            - 六小時上課 (到期日期: {{ object.six_hour_class_expiry_date }})<br/>
-                        {% endif %}
-                        {% if object.hazard_notification_class_expiry_date and object.hazard_notification_class_expiry_date <= (datetime.date.today() + relativedelta(months=1)) %}
-                            - 危害告知上課 (到期日期: {{ object.hazard_notification_class_expiry_date }})<br/>
-                        {% endif %}
-                        <br/>
-                        請盡快安排相關更新。<br/><br/>
-                        此致，<br/>
-                        {{ object.company_id.name }}
-                    </p>
-                </div>
+<![CDATA[
+<div style="margin: 0px; padding: 0px;">
+    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+        尊敬的 {{ object.name }}，<br/><br/>
+        請注意，您的以下項目即將在一個月內到期：<br/><br/>
+        {% if object.next_physical_examination_date and object.next_physical_examination_date <= (datetime.date.today() + relativedelta(months=1)) %}
+            - 體檢 (到期日期: {{ object.next_physical_examination_date }})<br/>
+        {% endif %}
+        {% if object.six_hour_class_expiry_date and object.six_hour_class_expiry_date <= (datetime.date.today() + relativedelta(months=1)) %}
+            - 六小時上課 (到期日期: {{ object.six_hour_class_expiry_date }})<br/>
+        {% endif %}
+        {% if object.hazard_notification_class_expiry_date and object.hazard_notification_class_expiry_date <= (datetime.date.today() + relativedelta(months=1)) %}
+            - 危害告知上課 (到期日期: {{ object.hazard_notification_class_expiry_date }})<br/>
+        {% endif %}
+        <br/>
+        請盡快安排相關更新。<br/><br/>
+        此致，<br/>
+        {{ object.company_id.name }}
+    </p>
+</div>
+]]>
             </field>
             <field name="auto_delete" eval="True"/>
         </record>

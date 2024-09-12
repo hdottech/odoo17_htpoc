@@ -15,7 +15,7 @@
         'views/beforeafterimage.xml',
         'views/users.xml',
         #'data/res_users_data.xml',
-        'data/email_template.xml',
+
             
 
         # 'views/users.xml',
