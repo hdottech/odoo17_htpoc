@@ -54,16 +54,19 @@ class NewResPartner(models.Model):
     hazard_notification_class_expired = fields.Boolean(string="危害告知上課到期", compute='_compute_class_expiration', store=True)
     hazard_notification_class_expiry_date = fields.Date(string="危害告知上課到期日", compute='_compute_class_expiration', store=True)
     next_physical_examination_status = fields.Selection([
-        ('valid', '有效'),
+        ('valid', '證件有效'),
+        ('warning', '即將到期'),
         ('expired', '已逾期'),
     ], string="體檢狀態", compute='_compute_date_status')
     six_hour_class_status = fields.Selection([
-        ('valid', '有效'),
+        ('valid', '證件有效'),
+        ('warning', '即將到期'),
         ('expired', '已逾期'),
     ], string="六小時上課狀態", compute='_compute_date_status')
     hazard_notification_class_status = fields.Selection([
         ('valid', '證件有效'),
-        ('expired', '無效證件'),
+        ('warning', '即將到期'),
+        ('expired', '已逾期'),
     ], string="危害告知上課狀態", compute='_compute_date_status')
 
     id_photo_front=fields.Binary(string="1.1. 身分證正面")
@@ -82,10 +85,9 @@ class NewResPartner(models.Model):
     foreigner_entry_certificate=fields.Binary(string="10. 外籍人士入台證明影本")
     health_commitment=fields.Binary(string="9. 健康承諾書")
 
-
-    #檢查身分證字號是否是唯一的
     @api.constrains('id_number')
     def _check_id_number(self):
+        # 檢查身分證字號是否唯一
         for record in self:
             if record.id_number:
                 existing = self.env['res.partner'].search([
@@ -94,156 +96,129 @@ class NewResPartner(models.Model):
                 ])
                 if existing:
                     raise ValidationError(_("身分證字號 %s 已存在，人員資料不允許重複建立！") % record.id_number)
-                
-    def write(self, vals):
-        if 'id_number' in vals:
-            for record in self:
-                if record.id_number != vals['id_number']:
-                    existing = self.env['res.partner'].search([
-                        ('id_number', '=', vals['id_number']),
-                        ('id', '!=', record.id)
-                    ])
-                    if existing:
-                        raise ValidationError(_("身分證字號 %s 已存在，人員資料不允許重複更新！") % vals['id_number'])
-        return super(NewResPartner, self).write(vals)
 
-    #計算工安行動電話
-    @api.onchange('industrial_safety_personnel')
-    def _onchange_industrial_safety_personnel(self):
-        self._compute_industrial_safety_mobile()
+    def write(self, vals):
+        # 更新時檢查身分證字號
+        if 'id_number' in vals:
+            self._check_id_number()
+        return super(NewResPartner, self).write(vals)
 
     @api.depends('industrial_safety_personnel')
     def _compute_industrial_safety_mobile(self):
-        if self.industrial_safety_personnel:
-            self.industrial_safety_mobile = self.industrial_safety_personnel.mobile
-        else:
-            self.industrial_safety_mobile = False
+        # 計算工安行動電話
+        for record in self:
+            record.industrial_safety_mobile = record.industrial_safety_personnel.mobile if record.industrial_safety_personnel else False
 
-    #在人名前面加上公司名稱
     @api.depends('name', 'parent_id.name')
     def _compute_display_name(self):
+        # 計算顯示名稱，加上公司名稱
         for partner in self:
-            if partner.parent_id and partner.parent_id.is_company:
-                partner.display_name = f"{partner.parent_id.name}, {partner.name}"
-            else:
-                partner.display_name = partner.name
+            partner.display_name = f"{partner.parent_id.name}, {partner.name}" if partner.parent_id and partner.parent_id.is_company else partner.name
 
-    # 計算年齡
     @api.depends('birthday')
     def _compute_age(self):
+        # 計算年齡
+        today = fields.Date.today()
         for record in self:
             if record.birthday:
-                today = fields.Date.today()
                 born = fields.Date.from_string(record.birthday)
-                # 計算年齡
                 record.age = today.year - born.year - ((today.month, today.day) < (born.month, born.day))
             else:
-                record.age = 0  # 如果沒有生日，則設定年齡為0
+                record.age = 0
 
-    # 計算下一次體檢日期
     @api.depends('age', 'physical_examination_date')
     def _compute_next_examination_date(self):
+        # 計算下一次體檢日期
         for record in self:
             if record.physical_examination_date and record.age:
-                if record.age < 45:
-                    years_to_add = 5
-                elif 45 <= record.age < 65:
-                    years_to_add = 3
-                else:
-                    years_to_add = 1
-                
+                years_to_add = 5 if record.age < 45 else 3 if 45 <= record.age < 65 else 1
                 record.next_physical_examination_date = record.physical_examination_date + relativedelta(years=years_to_add)
             else:
                 record.next_physical_examination_date = False
 
     @api.depends('Six_hour_class_date', 'hazard_notification_class_date')
     def _compute_class_expiration(self):
+        # 計算課程到期日期和狀態
         today = fields.Date.today()
         for record in self:
-            # 計算六小時上課日期到期時間
-            if record.Six_hour_class_date:
-                expiry_date = record.Six_hour_class_date + relativedelta(years=3)
-                record.six_hour_class_expiry_date = expiry_date
-                record.six_hour_class_expired = today >= (expiry_date - relativedelta(months=1))
-            else:
-                record.six_hour_class_expired = False
-                record.six_hour_class_expiry_date = False
+            for class_date, expiry_date, expired in [
+                ('Six_hour_class_date', 'six_hour_class_expiry_date', 'six_hour_class_expired'),
+                ('hazard_notification_class_date', 'hazard_notification_class_expiry_date', 'hazard_notification_class_expired')
+            ]:
+                if record[class_date]:
+                    expiry = record[class_date] + relativedelta(years=3)
+                    record[expiry_date] = expiry
+                    record[expired] = today >= (expiry - relativedelta(months=1))
+                else:
+                    record[expiry_date] = record[expired] = False
 
-            # 計算危害告知上課日期到期時間
-            if record.hazard_notification_class_date:
-                expiry_date = record.hazard_notification_class_date + relativedelta(years=3)
-                record.hazard_notification_class_expiry_date = expiry_date
-                record.hazard_notification_class_expired = today >= (expiry_date - relativedelta(months=1))
-            else:
-                record.hazard_notification_class_expired = False
-                record.hazard_notification_class_expiry_date = False
+    @api.depends('next_physical_examination_date', 'six_hour_class_expiry_date', 'hazard_notification_class_expiry_date')
+    def _compute_date_status(self):
+        # 計算各項狀態
+        today = fields.Date.today()
+        one_month_later = today + relativedelta(months=1)
+        for record in self:
+            for date_field, status_field in [
+                ('next_physical_examination_date', 'next_physical_examination_status'),
+                ('six_hour_class_expiry_date', 'six_hour_class_status'),
+                ('hazard_notification_class_expiry_date', 'hazard_notification_class_status')
+            ]:
+                if record[date_field]:
+                    record[status_field] = 'expired' if record[date_field] < today else 'warning' if record[date_field] <= one_month_later else 'valid'
+                else:
+                    record[status_field] = 'expired'
 
     @api.depends('next_physical_examination_date', 'six_hour_class_expiry_date', 'hazard_notification_class_expiry_date')
     def _compute_admission(self):
+        # 計算是否可入場
         today = fields.Date.today()
         for record in self:
-            if (record.next_physical_examination_date and record.next_physical_examination_date >= today) and \
-               (record.six_hour_class_expiry_date and record.six_hour_class_expiry_date >= today) and \
-               (record.hazard_notification_class_expiry_date and record.hazard_notification_class_expiry_date >= today):
-                record.admission = 'yes'
-            else:
-                record.admission = 'no'
+            record.admission = 'yes' if all(record[f] and record[f] >= today for f in [
+                'next_physical_examination_date', 'six_hour_class_expiry_date', 'hazard_notification_class_expiry_date'
+            ]) else 'no'
 
-    # 檢查課程到期狀態
-    @api.depends('next_physical_examination_date', 'six_hour_class_expiry_date', 'hazard_notification_class_expiry_date')
-    def _compute_date_status(self):
-        today = fields.Date.today()
-        for record in self:
-            record.next_physical_examination_status = 'valid' if record.next_physical_examination_date and record.next_physical_examination_date >= today else 'expired'
-            record.six_hour_class_status = 'valid' if record.six_hour_class_expiry_date and record.six_hour_class_expiry_date >= today else 'expired'
-            record.hazard_notification_class_status = 'valid' if record.hazard_notification_class_expiry_date and record.hazard_notification_class_expiry_date >= today else 'expired'
-
-    # 自動發送信件
     def action_send_email(self):
-        template = self.env.ref("New_res_partner.email_template")  # 取得郵件模板
+        # 發送提醒郵件
+        template = self.env.ref("New_res_partner.email_template_expiration_notification", raise_if_not_found=False)
         company_email = self.env.company.email
 
         for partner in self:
-            email_values = {
-                "email_to": partner.email,
-                "email_cc": company_email,
-                "auto_delete": True,
-                "recipient_ids": [],
-                "partner_ids": [],
-                "scheduled_date": False,
-                "email_from": company_email,
-            }
-            template.send_mail(partner.id, email_values=email_values, force_send=True)
+            expiring_items = [item for item, status in [
+                ('體檢', partner.next_physical_examination_status),
+                ('六小時上課', partner.six_hour_class_status),
+                ('危害告知上課', partner.hazard_notification_class_status)
+            ] if status in ['warning', 'expired']]
+
+            if expiring_items and partner.email:
+                template.with_context(expiring_items=", ".join(expiring_items)).send_mail(
+                    partner.id,
+                    email_values={
+                        "email_to": partner.email,
+                        "email_cc": False,
+                        "auto_delete": True,
+                        "email_from": company_email,
+                    },
+                    force_send=True,
+                    raise_exception=True
+                )
+        self.env.cr.commit()
+        self.env.invalidate_all()
 
     @api.model
     def _cron_check_expirations(self):
-        today = fields.Date.today()
-        one_month_later = today + relativedelta(months=1)
-
-        partners_to_notify = self.search([
+        # 定時檢查並發送郵件
+        self.search([
             '|', '|',
-            ('next_physical_examination_date', '<=', one_month_later),
-            ('six_hour_class_expiry_date', '<=', one_month_later),
-            ('hazard_notification_class_expiry_date', '<=', one_month_later)
-        ])
+            ('next_physical_examination_status', 'in', ['warning', 'expired']),
+            ('six_hour_class_status', 'in', ['warning', 'expired']),
+            ('hazard_notification_class_status', 'in', ['warning', 'expired'])
+        ]).action_send_email()
 
-        for partner in partners_to_notify:
-            expiring_items = []
-            if partner.next_physical_examination_date and partner.next_physical_examination_date <= one_month_later:
-                expiring_items.append('體檢')
-            if partner.six_hour_class_expiry_date and partner.six_hour_class_expiry_date <= one_month_later:
-                expiring_items.append('六小時上課')
-            if partner.hazard_notification_class_expiry_date and partner.hazard_notification_class_expiry_date <= one_month_later:
-                expiring_items.append('危害告知上課')
-
-            if expiring_items:
-                partner.action_send_email()
-
-    # 在您的模型中添加這個方法
+    @api.model
     def init(self):
-        # 創建一個每週運行的 cron 作業
-        self.env['ir.cron'].sudo().create({
-            'name': 'Check Partner Expirations',
+        # 初始化 cron 作業
+        cron_data = {
+            'name': '檢查夥伴到期日並發送郵件',
             'model_id': self.env['ir.model'].search([('model', '=', 'res.partner')]).id,
             'state': 'code',
             'code': 'model._cron_check_expirations()',
@@ -252,4 +227,8 @@ class NewResPartner(models.Model):
             'numbercall': -1,
             'doall': False,
             'active': True,
-        })
+        }
+        if not self.env['ir.cron'].sudo().search([('name', '=', cron_data['name'])]):
+            self.env['ir.cron'].sudo().create(cron_data)
+
+    

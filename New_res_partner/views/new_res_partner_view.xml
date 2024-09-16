@@ -6,8 +6,14 @@
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
+                <!-- 添加發送郵件按鈕 -->
+                <xpath expr="//div[@name='button_box']" position="before">
+                    <button name="action_send_email" type="object" 
+                            string="發送體檢通知" 
+                            />
+                </xpath>
                 <!-- 隱藏頁面 -->
-                <!-- 隱藏地址類型下拉選單 -->
+                <!-- 隱藏地址類型下拉選單 -->               
                 <xpath expr="//field[@name='type']" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath>

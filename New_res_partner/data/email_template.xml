@@ -1,46 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data noupdate="1">
-        <record id="ir_cron_check_expirations" model="ir.cron">
-            <field name="name">Send Expiration Notifications</field>
-            <field name="model_id" ref="base.model_res_partner"/>
-            <field name="state">code</field>
-            <field name="code">model._cron_check_expirations()</field>
-            <field name="interval_number">1</field>
-            <field name="interval_type">weeks</field>
-            <field name="numbercall">-1</field>
-            <field name="doall" eval="False"/>
-            <field name="active" eval="True"/>
-        </record>
-
         <record id="email_template_expiration_notification" model="mail.template">
-            <field name="name">Expiration Notification</field>
+            <field name="name">重要通知：體檢資訊更新</field>
             <field name="model_id" ref="base.model_res_partner"/>
-            <field name="subject">重要通知：您的證件即將到期</field>
-            <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
-            <field name="email_to">{{ object.email_formatted }}</field>
+            <field name="subject">重要通知：{{object.name}}體檢資訊更新</field>
             <field name="body_html" type="html">
-<![CDATA[
-<div style="margin: 0px; padding: 0px;">
-    <p style="margin: 0px; padding: 0px; font-size: 13px;">
-        尊敬的 {{ object.name }}，<br/><br/>
-        請注意，您的以下項目即將在一個月內到期：<br/><br/>
-        {% if object.next_physical_examination_date and object.next_physical_examination_date <= (datetime.date.today() + relativedelta(months=1)) %}
-            - 體檢 (到期日期: {{ object.next_physical_examination_date }})<br/>
-        {% endif %}
-        {% if object.six_hour_class_expiry_date and object.six_hour_class_expiry_date <= (datetime.date.today() + relativedelta(months=1)) %}
-            - 六小時上課 (到期日期: {{ object.six_hour_class_expiry_date }})<br/>
-        {% endif %}
-        {% if object.hazard_notification_class_expiry_date and object.hazard_notification_class_expiry_date <= (datetime.date.today() + relativedelta(months=1)) %}
-            - 危害告知上課 (到期日期: {{ object.hazard_notification_class_expiry_date }})<br/>
-        {% endif %}
-        <br/>
-        請盡快安排相關更新。<br/><br/>
-        此致，<br/>
-        {{ object.company_id.name }}
-    </p>
-</div>
-]]>
+                <div style="padding: 16px; background-color: #F1F1F1; color: #333; width: 100%; font-family: Arial, sans-serif;">
+                    <h2 style="color: #0056b3;">體檢資訊通知</h2>
+                    <p>親愛的 <strong><t t-out="object.name or ''"/></strong>，</p>
+                    <p>以下是您的體檢資訊：</p>
+                    <p>以下項目即將在一個月內到期或已經到期：</p>
+                    <table border="1" cellpadding="5" cellspacing="0" style="width: 100%; border-collapse: collapse;">
+                        <tr style="background-color: #0056b3; color: white;">
+                            <th>姓名</th>
+                            <th>下一次體檢時間</th>
+                            <th>體檢狀態</th>
+                            <th>六小時上課到期日</th>
+                            <th>六小時上課狀態</th>
+                            <th>危害告知上課到期日</th>
+                            <th>危害告知上課狀態</th>
+                        </tr>
+                        <tr>
+                            <td><t t-out="object.name or ''"/></td>
+                            <td><t t-out="object.next_physical_examination_date or '未設定'"/></td>
+                            <td t-attf-style="background-color: {{ 'red' if object.next_physical_examination_status == 'expired' else 'yellow' if object.next_physical_examination_status == 'warning' else 'inherit' }};">
+                                <t t-out="dict(object._fields['next_physical_examination_status'].selection).get(object.next_physical_examination_status) or '未設定'"/>
+                            </td>
+                            <td><t t-out="object.six_hour_class_expiry_date or '未設定'"/></td>
+                            <td t-attf-style="background-color: {{ 'red' if object.six_hour_class_status == 'expired' else 'yellow' if object.six_hour_class_status == 'warning' else 'inherit' }};">
+                                <t t-out="dict(object._fields['six_hour_class_status'].selection).get(object.six_hour_class_status) or '未設定'"/>
+                            </td>
+                            <td><t t-out="object.hazard_notification_class_expiry_date or '未設定'"/></td>
+                            <td t-attf-style="background-color: {{ 'red' if object.hazard_notification_class_status == 'expired' else 'yellow' if object.hazard_notification_class_status == 'warning' else 'inherit' }};">
+                                <t t-out="dict(object._fields['hazard_notification_class_status'].selection).get(object.hazard_notification_class_status) or '未設定'"/>
+                            </td>
+                        </tr>
+                    </table>
+                    <p style="margin-top: 20px;">
+                        <strong>注意事項：</strong>
+                    </p>
+                    <ul>
+                        <li>如果狀態為「即將到期」，請盡快安排更新。</li>
+                        <li>如果狀態為「已逾期」，請立即處理以確保合規。</li>
+                        <li>保持所有證照和培訓的有效性對於工作安全至關重要。</li>
+                    </ul>
+                    <p>如有任何疑問或需要協助，請隨時聯繫人力資源部門。</p>
+                    <p style="color: #0056b3;">祝您身體健康！</p>
+                </div>
             </field>
             <field name="auto_delete" eval="True"/>
         </record>
