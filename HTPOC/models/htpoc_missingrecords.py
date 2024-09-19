@@ -5,7 +5,7 @@ class HtpocMissingRecords(models.Model):
     _name = 'htpoc.missingrecords'
     _inherit = ['mail.thread', 'mail.activity.mixin']  # 使模型能夠追蹤訊息和活動
     _description = 'Missing Records'
-    
+
 
     # 欄位定義
     brief = fields.Char(string='缺失簡述', required=True)  # 缺失簡述
@@ -174,9 +174,6 @@ class HtpocMissingRecords(models.Model):
         """
         自動帶出工安人員的電話號碼
         """
-
-
-
         for record in self:
             if record.security_person:
                 record.security_person_tel = record.security_person.mobile  # 取得工安人員手機號碼
