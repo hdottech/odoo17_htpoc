@@ -173,6 +173,9 @@ class HtpocMissingRecords(models.Model):
         """
         自動帶出工安人員的電話號碼
         """
+
+
+        
         for record in self:
             if record.security_person:
                 record.security_person_tel = record.security_person.mobile  # 取得工安人員手機號碼
