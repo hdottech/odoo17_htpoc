@@ -7,7 +7,6 @@ class HtpocMissingRecords(models.Model):
     _description = 'Missing Records'
 
     brief = fields.Char(string='缺失簡述', required=True)
-    test123 = fields.Char(string='test123', required=True)
 
     contact = fields.Many2one("res.partner", string="聯絡人", copy=False)
     company = fields.Many2one("res.partner", string='公司名稱',  readonly=True)
