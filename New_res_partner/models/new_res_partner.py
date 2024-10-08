@@ -182,7 +182,7 @@ class NewResPartner(models.Model):
         template = self.env.ref("New_res_partner.email_template_expiration_notification", raise_if_not_found=False)
         company_email = self.env.company.email
 
-        for partner in self:
+        for partner in self.filtered(lambda p: not p.is_company):  # 只處理個人聯絡人
             expiring_items = [item for item, status in [
                 ('體檢', partner.next_physical_examination_status),
                 ('六小時上課', partner.six_hour_class_status),
