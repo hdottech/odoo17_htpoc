@@ -92,7 +92,7 @@ class SafetyOperationController(http.Controller):
             if files:
                 # 先找到 Approvals 資料夾
                 approval_folder = request.env['documents.folder'].sudo().search([
-                    ('name', '=', 'Approvals')
+                    ('name', '=', '審批') #Approvals
                 ], limit=1)
 
                 if not approval_folder:
