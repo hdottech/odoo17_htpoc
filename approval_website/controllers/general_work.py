@@ -63,6 +63,7 @@ class TestWebsiteController(http.Controller):
                 'request_owner_id': request.env.user.id,
                 'request_status': 'new',
                 'name': approval_type.name,  # 使用選擇的審批主題名稱
+                'email': 'no-email@example.com', # 提供預設值
                 'approval_type_id': approval_type.id,  # 關聯審批主題
                 'planned_date_begin': start_datetime,
                 'planned_date_end': end_datetime,
