@@ -1,0 +1,636 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>  
+        <template id="special_work_permit_form" name="Special Work Permit Form">
+            <t t-call="website.layout">
+                <div class="container">
+                    <div id="wrap" class="oe_structure oe_empty">   
+                        <section class="s_text_block pt40 pb0 o_colored_level" data-snippet="s_text_block" data-name="標題">
+                            <div class="container">
+                                <h2 style="text-align:center;"><strong>特殊作業許可單</strong></h2>
+                            </div>
+                        </section>
+                        <!-- 錯誤訊息顯示 -->
+                        <t t-if="error">
+                            <div class="alert alert-danger" role="alert">
+                                <i class="fa fa-exclamation-triangle"/> <span t-esc="error"/>
+                            </div>
+                        </t>
+                        
+                        <form id="special_work_permit_form" action="/special_work_permit/submit" method="post" class="o_mark_required" data-mark="*" enctype="multipart/form-data">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                            
+                            <!-- 選擇案場類型 -->
+                            <div class="form-group col-12 s_website_form_field mb-4">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="approval_type_id">
+                                        <span class="s_website_form_label_content">選擇案場</span>
+                                        <span class="s_website_form_mark">*</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <select class="form-control s_website_form_input" id="approval_type_id" name="approval_type_id" required="required">
+                                            <option value="">請選擇審批案場</option>
+                                            <t t-foreach="approval_types" t-as="type">
+                                                <option t-att-value="type.id" t-att-selected="type.id == int(values.get('approval_type_id', '0'))">
+                                                    <t t-esc="type.name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 電子郵件 -->
+                            <div class="form-group col-12 s_website_form_field mb-4">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="email">
+                                        <span class="s_website_form_label_content">你的電郵地址</span>
+                                        <span class="s_website_form_mark">*</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <input type="email" class="form-control s_website_form_input" name="email" required="required" t-att-value="values.get('email', '')"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 主承商 -->
+                            <div class="form-group col-12 s_website_form_field mb-4">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="main_contractor">
+                                        <span class="s_website_form_label_content">主承商</span>
+                                        <span class="s_website_form_mark">*</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <select class="form-control s_website_form_input" id="main_contractor" name="main_contractor" required="required">
+                                            <option value="">請選擇主承商</option>
+                                            <t t-foreach="main_contractors" t-as="contractor">
+                                                <option t-att-value="contractor.id" t-att-selected="contractor.id == int(values.get('main_contractor', '0'))">
+                                                    <t t-esc="contractor.name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 次承商 -->
+                            <div class="form-group col-12 s_website_form_field mb-4">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="sub_contractor">
+                                        <span class="s_website_form_label_content">次承商</span>
+                                        <span class="s_website_form_mark">*</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <select class="form-control s_website_form_input" id="sub_contractor" name="sub_contractor" required="required">
+                                            <option value="">請選擇次承商</option>
+                                            <t t-foreach="sub_contractors" t-as="contractor">
+                                                <option t-att-value="contractor.id" t-att-selected="contractor.id == int(values.get('sub_contractor', '0'))">
+                                                    <t t-esc="contractor.name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 申請日期 -->
+                            <div class="form-group col-12 s_website_form_field mb-4">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="apply_date">
+                                        <span class="s_website_form_label_content">申請日期</span>
+                                        <span class="s_website_form_mark">*</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <input type="date" 
+                                            class="form-control s_website_form_input" 
+                                            name="apply_date" 
+                                            required="required"
+                                            readonly="readonly"
+                                            t-att-value="datetime.date.today().strftime('%Y-%m-%d')"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 作業時段 -->
+                            <div class="form-group col-12 s_website_form_field mb-4">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px">
+                                        <span class="s_website_form_label_content">作業時段</span>
+                                        <span class="s_website_form_mark">*</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <div class="custom-control custom-radio">
+                                            <input type="radio" class="custom-control-input" 
+                                                id="entry_work_time_regular" 
+                                                name="entry_work_time" 
+                                                value="常日 08:00~18:00" 
+                                                t-att-checked="values.get('entry_work_time') == '常日 08:00~18:00'" 
+                                                required="required"/>
+                                            <label class="custom-control-label" for="entry_work_time_regular">常日 08:00~18:00</label>
+                                        </div>
+                                        <div class="custom-control custom-radio mt-2">
+                                            <input type="radio" class="custom-control-input" 
+                                                id="entry_work_time_night" 
+                                                name="entry_work_time" 
+                                                value="夜間 18:00~07:00" 
+                                                t-att-checked="values.get('entry_work_time') == '夜間 18:00~07:00'" 
+                                                required="required"/>
+                                            <label class="custom-control-label" for="entry_work_time_night">夜間 18:00~07:00</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 是否攜帶化學品 -->
+                            <div class="form-group col-12 s_website_form_field mb-4">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px">
+                                        <span class="s_website_form_label_content">是否攜帶化學品</span>
+                                        <span class="s_website_form_mark">*</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <div class="custom-control custom-radio">
+                                            <input type="radio" class="custom-control-input" id="chemicals_no" 
+                                                name="has_chemicals" value="否" 
+                                                t-att-checked="values.get('has_chemicals') == '否'" 
+                                                required="required"
+                                                onclick="toggleSdsFileUpload(false)"/>
+                                            <label class="custom-control-label" for="chemicals_no">否</label>
+                                        </div>
+                                        <div class="custom-control custom-radio mt-2">
+                                            <input type="radio" class="custom-control-input" id="chemicals_yes" 
+                                                name="has_chemicals" value="是" 
+                                                t-att-checked="values.get('has_chemicals') == '是'" 
+                                                required="required"
+                                                onclick="toggleSdsFileUpload(true)"/>
+                                            <label class="custom-control-label" for="chemicals_yes">是</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- SDS 文件上傳欄位 -->
+                            <div id="sds_upload_div" class="form-group col-12 s_website_form_field mb-4" style="display: none;">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px">
+                                        <span class="s_website_form_label_content">請檢附SDS文件</span>
+                                        <span class="s_website_form_mark">*</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <input type="file" class="form-control s_website_form_input" name="sds_file" id="sds_file" 
+                                            accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.txt"/>
+                                        <small class="text-muted">若攜帶化學品需檢附SDS文件</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 特殊作業許可 -->
+                            <div class="form-group col-12 s_website_form_field mb-4">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px">
+                                        <span class="s_website_form_label_content">特殊作業許可</span>
+                                        <span class="s_website_form_mark">*</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <div class="row">
+                                            <!-- 第一欄 -->
+                                            <div class="col-md-4">
+                                                <div class="custom-control custom-checkbox mb-2">
+                                                    <input type="checkbox" class="custom-control-input" id="high_work" name="high_work" t-att-checked="values.get('high_work')"/>
+                                                    <label class="custom-control-label" for="high_work">高架作業</label>
+                                                </div>
+                                                <div class="custom-control custom-checkbox mb-2">
+                                                    <input type="checkbox" class="custom-control-input" id="confined_space" name="confined_space" t-att-checked="values.get('confined_space')"/>
+                                                    <label class="custom-control-label" for="confined_space">局限作業</label>
+                                                </div>
+                                                <div class="custom-control custom-checkbox mb-2">
+                                                    <input type="checkbox" class="custom-control-input" id="hypoxia" name="hypoxia" t-att-checked="values.get('hypoxia')"/>
+                                                    <label class="custom-control-label" for="hypoxia">缺氧作業</label>
+                                                </div>
+                                            </div>
+                                            <!-- 第二欄 -->
+                                            <div class="col-md-4">
+                                                <div class="custom-control custom-checkbox mb-2">
+                                                    <input type="checkbox" class="custom-control-input" id="hot_work" name="hot_work" t-att-checked="values.get('hot_work')"/>
+                                                    <label class="custom-control-label" for="hot_work">熱作業</label>
+                                                </div>
+                                                <div class="custom-control custom-checkbox mb-2">
+                                                    <input type="checkbox" class="custom-control-input" id="open_flame" name="open_flame" t-att-checked="values.get('open_flame')"/>
+                                                    <label class="custom-control-label" for="open_flame">明火作業</label>
+                                                </div>
+                                                <div class="custom-control custom-checkbox mb-2">
+                                                    <input type="checkbox" class="custom-control-input" id="electric_work" name="electric_work" t-att-checked="values.get('electric_work')"/>
+                                                    <label class="custom-control-label" for="electric_work">電力作業</label>
+                                                </div>
+                                            </div>
+                                            <!-- 第三欄 -->
+                                            <div class="col-md-4">
+                                                <div class="custom-control custom-checkbox mb-2">
+                                                    <input type="checkbox" class="custom-control-input" id="hanging_work" name="hanging_work" t-att-checked="values.get('hanging_work')"/>
+                                                    <label class="custom-control-label" for="hanging_work">吊掛作業</label>
+                                                </div>
+                                                <div class="custom-control custom-checkbox mb-2">
+                                                    <input type="checkbox" class="custom-control-input" id="eExcavation_work" name="eExcavation_work" t-att-checked="values.get('eExcavation_work')"/>
+                                                    <label class="custom-control-label" for="eExcavation_work">開挖作業</label>
+                                                </div>
+                                                <div class="custom-control custom-checkbox mb-2">
+                                                    <input type="checkbox" class="custom-control-input" id="organic_solvent" name="organic_solvent" t-att-checked="values.get('organic_solvent')"/>
+                                                    <label class="custom-control-label" for="organic_solvent">有機溶劑</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 高架作業種類 -->
+                            <div class="form-group col-12 s_website_form_field mb-4">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px">
+                                        <span class="s_website_form_label_content">高架作業種類</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <div class="row">
+                                            <!-- 第一欄 -->
+                                            <div class="col-md-4">
+                                                <div class="custom-control custom-checkbox mb-2">
+                                                    <input type="checkbox" class="custom-control-input" 
+                                                        id="high_aerial_platform" name="aerial_platform" 
+                                                        t-att-checked="values.get('aerial_platform')"/>
+                                                    <label class="custom-control-label" for="high_aerial_platform">高空工作車</label>
+                                                </div>
+                                                <div class="custom-control custom-checkbox mb-2">
+                                                    <input type="checkbox" class="custom-control-input" 
+                                                        id="ceiling_work" name="ceiling_work" 
+                                                        t-att-checked="values.get('ceiling_work')"/>
+                                                    <label class="custom-control-label" for="ceiling_work">天花板</label>
+                                                </div>
+                                            </div>
+                                            <!-- 第二欄 -->
+                                            <div class="col-md-4">
+                                                <div class="custom-control custom-checkbox mb-2">
+                                                    <input type="checkbox" class="custom-control-input" 
+                                                        id="ladder" name="ladder" 
+                                                        t-att-checked="values.get('ladder')"/>
+                                                    <label class="custom-control-label" for="ladder">梯具(合梯、爬梯、平台梯等)</label>
+                                                </div>
+                                                <div class="custom-control custom-checkbox mb-2">
+                                                    <input type="checkbox" class="custom-control-input" 
+                                                            id="other_high_work" name="other_high_work" 
+                                                            t-att-checked="values.get('other_high_work')"
+                                                            onclick="toggleOtherDesc(this.checked, 'other_high_work_desc')" />
+                                                    <label class="custom-control-label" for="other_high_work">其他(需填寫說明)</label>
+                                                </div>
+                                            </div>
+                                            <!-- 第三欄 -->
+                                            <div class="col-md-4">
+                                                <div class="custom-control custom-checkbox mb-2">
+                                                    <input type="checkbox" class="custom-control-input" 
+                                                        id="scaffolding" name="scaffolding" 
+                                                        t-att-checked="values.get('scaffolding')"/>
+                                                    <label class="custom-control-label" for="scaffolding">施工架</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 其他高架作業說明 (預設隱藏) -->
+                            <div id="other_high_work_desc" class="form-group col-12 s_website_form_field mb-4" style="display: none;">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px">
+                                        <span class="s_website_form_label_content">其他高架作業說明</span>
+                                        <span class="s_website_form_mark">*</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <input type="text" class="form-control s_website_form_input" 
+                                            name="other_high_work_desc" 
+                                            id="other_high_work_desc_input"
+                                            t-att-value="values.get('other_high_work_desc', '')"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 明火作業種類 -->
+                            <div class="form-group col-12 s_website_form_field mb-4">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px">
+                                        <span class="s_website_form_label_content">明火作業種類</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <div class="row">
+                                            <!-- 第一欄 -->
+                                            <div class="col-md-4">
+                                                <div class="custom-control custom-checkbox mb-2">
+                                                    <input type="checkbox" class="custom-control-input" id="cutting_machine" name="cutting_machine" t-att-checked="values.get('cutting_machine')"/>
+                                                    <label class="custom-control-label" for="cutting_machine">切割機</label>
+                                                </div>
+                                                <div class="custom-control custom-checkbox mb-2">
+                                                    <input type="checkbox" class="custom-control-input" id="acetylene" name="acetylene" t-att-checked="values.get('acetylene')"/>
+                                                    <label class="custom-control-label" for="acetylene">乙炔</label>
+                                                </div>
+                                            </div>
+                                            <!-- 第二欄 -->
+                                            <div class="col-md-4">
+                                                <div class="custom-control custom-checkbox mb-2">
+                                                    <input type="checkbox" class="custom-control-input" id="grinder" name="grinder" t-att-checked="values.get('grinder')"/>
+                                                    <label class="custom-control-label" for="grinder">砂輪機</label>
+                                                </div>
+                                                <div class="custom-control custom-checkbox mb-2">
+                                                    <input type="checkbox" class="custom-control-input" id="welding" name="welding" t-att-checked="values.get('welding')"/>
+                                                    <label class="custom-control-label" for="welding">電焊機</label>
+                                                </div>
+                                            </div>
+                                            <!-- 第三欄 -->
+                                            <div class="col-md-4">
+                                                <div class="custom-control custom-checkbox mb-2">
+                                                    <input type="checkbox" class="custom-control-input" id="spray" name="spray" t-att-checked="values.get('spray')"/>
+                                                    <label class="custom-control-label" for="spray">噴燈</label>
+                                                </div>
+                                                <div class="custom-control custom-checkbox mb-2">
+                                                    <input type="checkbox" class="custom-control-input" 
+                                                        id="other_flame_work" name="other_flame_work" 
+                                                        t-att-checked="values.get('other_flame_work')"
+                                                        onclick="toggleOtherDesc(this.checked, 'other_flame_work_desc')"/>
+                                                    <label class="custom-control-label" for="other_flame_work">其他(需填寫說明)</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 明火作業其他說明 (預設隱藏) -->
+                            <div id="other_flame_work_desc" class="form-group col-12 s_website_form_field mb-4" style="display: none;">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px">
+                                        <span class="s_website_form_label_content">其他明火作業說明</span>
+                                        <span class="s_website_form_mark">*</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <input type="text" class="form-control s_website_form_input" 
+                                            name="other_flame_work_desc" id="other_flame_work_desc_input"
+                                            t-att-value="values.get('other_flame_work_desc', '')"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 熱作業種類 -->
+                            <div class="form-group col-12 s_website_form_field mb-4">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px">
+                                        <span class="s_website_form_label_content">熱作業種類</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <div class="row">
+                                            <!-- 第一欄 -->
+                                            <div class="col-md-4">
+                                                <div class="custom-control custom-checkbox mb-2">
+                                                    <input type="checkbox" class="custom-control-input" id="heat_gun" name="heat_gun" t-att-checked="values.get('heat_gun')"/>
+                                                    <label class="custom-control-label" for="heat_gun">熱風槍</label>
+                                                </div>
+                                                <div class="custom-control custom-checkbox mb-2">
+                                                    <input type="checkbox" class="custom-control-input" id="gas_stove" name="gas_stove" t-att-checked="values.get('gas_stove')"/>
+                                                    <label class="custom-control-label" for="gas_stove">氬焊</label>
+                                                </div>
+                                            </div>
+                                            <!-- 第二欄 -->
+                                            <div class="col-md-4">
+                                                <div class="custom-control custom-checkbox mb-2">
+                                                    <input type="checkbox" class="custom-control-input" id="oven" name="oven" t-att-checked="values.get('oven')"/>
+                                                    <label class="custom-control-label" for="oven">熔接</label>
+                                                </div>
+                                                <div class="custom-control custom-checkbox mb-2">
+                                                    <input type="checkbox" class="custom-control-input" id="iron_plate" name="iron_plate" t-att-checked="values.get('iron_plate')"/>
+                                                    <label class="custom-control-label" for="iron_plate">鐵板燒</label>
+                                                </div>
+                                            </div>
+                                            <!-- 第三欄 -->
+                                            <div class="col-md-4">
+                                                <div class="custom-control custom-checkbox mb-2">
+                                                    <input type="checkbox" class="custom-control-input" id="drying_box" name="drying_box" t-att-checked="values.get('drying_box')"/>
+                                                    <label class="custom-control-label" for="drying_box">烘管箱</label>
+                                                </div>
+                                                <div class="custom-control custom-checkbox mb-2">
+                                                    <input type="checkbox" class="custom-control-input" 
+                                                        id="other_heat_work" name="other_heat_work" 
+                                                        t-att-checked="values.get('other_heat_work')"
+                                                        onclick="toggleOtherDesc(this.checked, 'other_heat_work_desc')"/>
+                                                    <label class="custom-control-label" for="other_heat_work">其他(需填寫說明)</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 熱作業其他說明 (預設隱藏) -->
+                            <div id="other_heat_work_desc" class="form-group col-12 s_website_form_field mb-4" style="display: none;">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px">
+                                        <span class="s_website_form_label_content">其他熱作業說明</span>
+                                        <span class="s_website_form_mark">*</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <input type="text" class="form-control s_website_form_input" 
+                                            name="other_heat_work_desc" id="other_heat_work_desc_input"
+                                            t-att-value="values.get('other_heat_work_desc', '')"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 作業開始日期 -->
+                            <div class="form-group col-12 s_website_form_field mb-4">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="planned_date_begin">
+                                        <span class="s_website_form_label_content">作業開始日期</span>
+                                        <span class="s_website_form_mark">*</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <input type="date" class="form-control s_website_form_input" 
+                                            name="planned_date_begin" 
+                                            required="required" 
+                                            t-att-value="values.get('planned_date_begin', '')"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 作業結束日期 -->
+                            <div class="form-group col-12 s_website_form_field mb-4">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="planned_date_end">
+                                        <span class="s_website_form_label_content">作業結束日期</span>
+                                        <span class="s_website_form_mark">*</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <input type="date" class="form-control s_website_form_input" 
+                                            name="planned_date_end" 
+                                            required="required" 
+                                            t-att-value="values.get('planned_date_end', '')"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 施工區域 -->
+                            <div class="form-group col-12 s_website_form_field mb-4">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="work_area">
+                                        <span class="s_website_form_label_content">施工區域</span>
+                                        <span class="s_website_form_mark">*</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <input type="text" class="form-control s_website_form_input" name="work_area" required="required" t-att-value="values.get('work_area', '')"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 廠商工安 -->
+                            <div class="form-group col-12 s_website_form_field mb-4">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="safety_supervisor">
+                                        <span class="s_website_form_label_content">廠商工安</span>
+                                        <span class="s_website_form_mark">*</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <input type="text" class="form-control s_website_form_input" name="safety_supervisor" required="required" t-att-value="values.get('safety_supervisor', '')"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 廠商工安電話 -->
+                            <div class="form-group col-12 s_website_form_field mb-4">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="safety_supervisor_phone">
+                                        <span class="s_website_form_label_content">廠商工安電話</span>
+                                        <span class="s_website_form_mark">*</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <input type="tel" class="form-control s_website_form_input" name="safety_supervisor_phone" required="required" t-att-value="values.get('safety_supervisor_phone', '')"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 廠商監工 -->
+                            <div class="form-group col-12 s_website_form_field mb-4">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="work_supervisor">
+                                        <span class="s_website_form_label_content">廠商監工</span>
+                                        <span class="s_website_form_mark">*</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <input type="text" class="form-control s_website_form_input" 
+                                            name="work_supervisor" 
+                                            required="required" 
+                                            t-att-value="values.get('work_supervisor', '')"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 廠商監工電話 -->
+                            <div class="form-group col-12 s_website_form_field mb-4">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="work_supervisor_phone">
+                                        <span class="s_website_form_label_content">廠商監工電話</span>
+                                        <span class="s_website_form_mark">*</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <input type="tel" class="form-control s_website_form_input" 
+                                            name="work_supervisor_phone" 
+                                            required="required" 
+                                            t-att-value="values.get('work_supervisor_phone', '')"/>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 提交按鈕 -->
+                            <div class="form-group col-12 s_website_form_submit mb-4">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <div class="col-sm-auto" style="width: 200px"></div>
+                                    <div class="col-sm">
+                                        <button type="submit" id="submit-btn" class="btn btn-primary">提交</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 注意事项 -->
+                            <div class="form-group col-12 mt-4">
+                                <div class="alert alert-info" role="alert">
+                                    <h5 class="alert-heading">申請簽核流程：</h5>
+                                    <ol>
+                                        <li><strong>*申請簽核流程：承商工安>主承商工程師->UIS EHS</strong></li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </form>
+                        <script type="text/javascript">
+                            //<![CDATA[
+                            // SDS 文件上傳控制
+                            function toggleSdsFileUpload(show) {
+                                var sdsUploadDiv = document.getElementById('sds_upload_div');
+                                var sdsFileInput = document.getElementById('sds_file');
+                                
+                                if (show) {
+                                    sdsUploadDiv.style.display = 'block';
+                                    sdsFileInput.setAttribute('required', 'required');
+                                } else {
+                                    sdsUploadDiv.style.display = 'none';
+                                    sdsFileInput.removeAttribute('required');
+                                    // 清除已選擇的文件
+                                    sdsFileInput.value = '';
+                                }
+                            }
+
+                            // 其他說明欄位控制
+                            function toggleOtherDesc(show, divId) {
+                                var div = document.getElementById(divId);
+                                var input = div.querySelector('input');
+                                
+                                if (show) {
+                                    div.style.display = 'block';
+                                    input.setAttribute('required', 'required');
+                                } else {
+                                    div.style.display = 'none';
+                                    input.removeAttribute('required');
+                                    input.value = '';
+                                }
+                            }
+
+                            // 頁面加載時初始化
+                            document.addEventListener('DOMContentLoaded', function() {
+                                // SDS 初始化
+                                var chemicalsYes = document.getElementById('chemicals_yes');
+                                if (chemicalsYes) {
+                                    if (chemicalsYes.checked) {
+                                        toggleSdsFileUpload(true);
+                                    }
+                                }
+
+                                // 高架作業其他說明初始化
+                                var otherHighWork = document.getElementById('other_high_work');
+                                if (otherHighWork) {
+                                    if (otherHighWork.checked) {
+                                        toggleOtherDesc(true, 'other_high_work_desc');
+                                    }
+                                }
+
+                                // 明火作業其他說明初始化
+                                var otherFlameWork = document.getElementById('other_flame_work');
+                                if (otherFlameWork) {
+                                    if (otherFlameWork.checked) {
+                                        toggleOtherDesc(true, 'other_flame_work_desc');
+                                    }
+                                }
+
+                                // 熱作業其他說明初始化
+                                var otherHeatWork = document.getElementById('other_heat_work');
+                                if (otherHeatWork) {
+                                    if (otherHeatWork.checked) {
+                                        toggleOtherDesc(true, 'other_heat_work_desc');
+                                    }
+                                }
+                            });
+                            //]]>
+                        </script>
+                        <t t-call-assets="web.assets_frontend" t-js="false"/>
+                    </div>
+                </div>
+            </t>
+        </template>
+    </data>
+</odoo>

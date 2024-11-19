@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- 列表視圖 -->
+        <record id="view_approval_request_tree_inherit" model="ir.ui.view">
+            <field name="name">approval.request.tree.inherit</field>
+            <field name="model">approval.request</field>
+            <field name="inherit_id" ref="approvals.approval_request_view_tree"/>
+            <field name="arch" type="xml">
+                <tree position="attributes">
+                    <attribute name="default_order">create_date desc</attribute>
+                </tree>
+                <field name="name" position="before">
+                    <field name="sequence_number"/>
+                </field>
+                <field name="request_status" position="before">
+                    <field name="planned_date_begin"/>
+                    <field name="planned_date_end"/>
+                </field>
+            </field>
+        </record>
+        <!-- 表單視圖 -->
+        <record id="view_approval_request_type_inherit" model="ir.ui.view">
+            <field name="name">approval.request.form.inherit</field>
+            <field name="model">approval.request</field>
+            <field name="inherit_id" ref="approvals.approval_request_view_form"/>
+            <field name="arch" type="xml">
+                <!-- 序號和案場名稱 -->
+                <xpath expr="//h1" position="replace">
+                    <h1><field name="name" readonly="1"/></h1>
+                    <h2><field name="sequence_number" readonly="1"/></h2>
+                </xpath>
+                <!-- 日期欄位 -->
+                <xpath expr="//group[@name='request_main']" position="inside">
+                    <field name="planned_date_begin" readonly="1"/>
+                    <field name="planned_date_end" readonly="1"/>
+                </xpath>
+                <!-- 隱藏原有的名稱欄位 -->
+                <xpath expr="//field[@name='name']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field> 
+        </record>
+        <record id="approval_request_view_form_inherit" model="ir.ui.view">
+            <field name="name">approval.request.form.inherit</field>
+            <field name="model">approval.request</field>
+            <field name="inherit_id" ref="approvals.approval_request_view_form"/>
+            <field name="arch" type="xml">
+                <button name="action_refuse" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </button>
+                <button name="action_refuse" position="after">
+                    <button name="%(action_approval_request_refuse)d" 
+                            string="退回" 
+                            type="action" 
+                            class="btn-danger"
+                            invisible = "request_status != 'pending'"/>
+                </button>
+                <notebook position="inside">
+                    <page string="退回歷史" name="refuse_history">
+                        <field name="refuse_history_ids" readonly="1">
+                            <tree>
+                                <field name="refuse_date"/>
+                                <field name="refuse_user_id"/>
+                                <field name="refuse_reason"/>
+                            </tree>
+                        </field>
+                    </page>
+                </notebook>
+            </field>
+        </record>
+    </data>
+</odoo>

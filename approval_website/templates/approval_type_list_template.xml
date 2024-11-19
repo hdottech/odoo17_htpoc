@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="approval_website.approval_type_detail_template" name="Approval Type Detail">
+            <t t-call="website.layout">
+                <div class="container mt-4">
+                    <!-- 麵包屑導航 -->
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/approvals">審批系統</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">
+                                <t t-esc="approval_type.name"/>
+                            </li>
+                        </ol>
+                    </nav>
+
+                    <!-- 頭部區域 -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2>
+                            <t t-esc="approval_type.name"/>
+                            <small class="text-muted">
+                                (共 <t t-esc="len(requests)"/> 個請求)
+                            </small>
+                        </h2>
+                        
+                        <!-- 篩選和操作按鈕 -->
+                        <div class="d-flex gap-2">
+                            <!-- 篩選下拉選單 -->
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                    篩選條件
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" t-attf-href="?filter=my">我的請求</a></li>
+                                    <li><a class="dropdown-item" t-attf-href="?filter=today">今日請求</a></li>
+                                    <li><a class="dropdown-item" t-attf-href="?filter=week">本週請求</a></li>
+                                </ul>
+                            </div>
+                            
+                            <!-- 分組下拉選單 -->
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                    分組顯示
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" t-attf-href="?groupby=status">按狀態分組</a></li>
+                                    <li><a class="dropdown-item" t-attf-href="?groupby=user">按用戶分組</a></li>
+                                    <li><a class="dropdown-item" t-attf-href="?groupby=date">按日期分組</a></li>
+                                </ul>
+                            </div>
+                            
+                            <!-- 新增請求按鈕 -->
+                            <!-- <a t-attf-href="/approval/#{approval_type.id}/new" class="btn btn-primary">
+                                <i class="fa fa-plus me-1"></i>
+                                新增請求
+                            </a> -->
+                        </div>
+                    </div>
+
+                    <!-- 搜索欄 -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <form class="d-flex align-items-center gap-2" t-attf-action="/approval/#{approval_type.id}" method="get">
+                                <!-- <label class="form-label m-0">搜索</label> -->
+                                <div class="input-group" style="width: 300px;">
+                                    <input type="search" name="search" class="form-control" 
+                                           placeholder="請輸入關鍵字..." t-att-value="search"/>
+                                    <button type="submit" class="btn btn-outline-primary">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </div>
+                                <a t-if="search" t-attf-href="/approval/#{approval_type.id}" 
+                                   class="btn btn-outline-secondary">
+                                    清除搜索
+                                </a>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- 請求列表 -->
+                    <div class="card">
+                        <div class="card-body p-0">
+                            <!-- 分組顯示 -->
+                            <t t-if="grouped_requests">
+                                <div class="accordion" id="requestAccordion">
+                                    <t t-foreach="grouped_requests" t-as="group">
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header">
+                                                <button class="accordion-button" type="button" 
+                                                        t-attf-data-bs-target="#collapse#{group_index}"
+                                                        data-bs-toggle="collapse">
+                                                    <t t-esc="group['name']"/>
+                                                    <span class="badge bg-secondary ms-2">
+                                                        <t t-esc="len(group['requests'])"/>
+                                                    </span>
+                                                </button>
+                                            </h2>
+                                            <div t-attf-id="collapse#{group_index}" class="accordion-collapse collapse show">
+                                                <div class="accordion-body p-0">
+                                                    <table class="table table-hover mb-0">
+                                                        <t t-call="approval_website.request_list_content">
+                                                            <t t-set="requests" t-value="group['requests']"/>
+                                                        </t>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </div>
+                            </t>
+                            <!-- 無分組顯示 -->
+                            <t t-else="">
+                                <table class="table table-hover mb-0">
+                                    <t t-call="approval_website.request_list_content">
+                                        <t t-set="requests" t-value="requests"/>
+                                    </t>
+                                </table>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <!-- 請求列表內容子模板 -->
+        <template id="approval_website.request_list_content">
+            <thead>
+                <tr>
+                    <th>編號</th>
+                    <th>審批主題</th>
+                    <th>申請人</th>
+                    <th>計畫開始日期</th>
+                    <th>計畫結束日期</th>
+                    <th>狀態</th>
+                    <th>詳情</th>
+                    <th>退回原因</th>
+                </tr>
+            </thead>
+            <tbody>
+                <t t-foreach="requests" t-as="req">
+                    <tr>
+                        <td>
+                            <a t-attf-href="/approval-request/#{req.id}" class="text-decoration-none">
+                                <t t-esc="req.sequence_number"/>
+                            </a>
+                        </td>
+                        <td><t t-esc="req.name"/></td>
+                        <td><t t-esc="req.request_owner_id.name"/></td>
+                        <td>
+                            <t t-if="req.date_start">
+                                <t t-esc="req.date_start.strftime('%Y-%m-%d %H:%M')"/>
+                            </t>
+                        </td>
+                        <td>
+                            <t t-if="req.date_end">
+                                <t t-esc="req.date_end.strftime('%Y-%m-%d %H:%M')"/>
+                            </t>
+                        </td>
+                        <td>
+                            <span t-attf-class="badge bg-#{req.request_status == 'approved' and 'success' or (req.request_status == 'refused' and 'danger' or (req.request_status == 'pending' and 'warning' or 'secondary'))}">
+                                <t t-esc="dict(req._fields['request_status'].selection).get(req.request_status)"/>
+                            </span>
+                        </td>
+                        <td>
+                            <a t-attf-href="/approval-request/#{req.id}" 
+                            class="btn btn-sm btn-outline-primary">
+                                查看詳情
+                            </a>
+                        </td>
+                        <td>
+                            <t t-if="req.request_status == 'refused' and req.refuse_reason">
+                                <span class="text-danger" t-att-title="req.refuse_reason">
+                                    <!-- 如果退回原因太長，只顯示前20個字符 -->
+                                    <t t-esc="req.refuse_reason[:20] + ('...' if len(req.refuse_reason) > 20 else '')"/>
+                                </span>
+                            </t>
+                        </td>
+                    </tr>
+                </t>
+            </tbody>
+        </template>
+    </data>
+</odoo>

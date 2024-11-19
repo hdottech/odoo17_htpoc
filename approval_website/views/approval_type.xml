@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Action -->
+    <record id="action_approval_type" model="ir.actions.act_window">
+        <field name="name">審批主題</field>
+        <field name="res_model">approval.type</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                建立您的第一個審批主題
+            </p>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_approval_type_form" model="ir.ui.view">
+        <field name="name">approval.type.form</field>
+        <field name="model">approval.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="sequence"/>
+                        <field name="active"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Tree View -->
+    <record id="view_approval_type_tree" model="ir.ui.view">
+        <field name="name">approval.type.tree</field>
+        <field name="model">approval.type</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Menu -->
+    <menuitem 
+        id="menu_approval_type"
+        name="審批主題"
+        action="action_approval_type"
+        parent="approvals.approvals_menu_config"
+        sequence="15"
+        groups="approvals.group_approval_user"/>
+
+    <!-- Inherit Approval Request Form -->
+    <record id="view_approval_request_form_inherit" model="ir.ui.view">
+        <field name="name">approval.request.form.inherit</field>
+        <field name="model">approval.request</field>
+        <field name="inherit_id" ref="approvals.approval_request_view_form"/>
+        <field name="arch" type="xml">
+            <field name="name" position="before">
+                <field name="approval_type_id" 
+                       options="{'no_create': True, 'no_open': True}"/>
+            </field>
+            <field name="name" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </field>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="approval_request_detail_template" name="Approval Request Detail">          
+            <t t-call="website.layout">
+                <div style="max-width: 1400px; margin: 0 auto; padding: 20px;">
+                    <div class="row">
+                        <!-- 左側內容 -->
+                        <div class="col-2">
+                            <div class="mb-4">
+                                <h5>申請人</h5>
+                                <div><t t-esc="approval_request.request_owner_id.name"/></div>                          <!-- <div class="text-muted"><t t-esc="approval_request.request_owner_id.email"/></div> -->
+                            </div>
+
+                            <div class="mb-4">
+                                <h5>審批人</h5>
+                                <t t-if="approval_request.approver_ids">
+                                    <t t-foreach="approval_request.approver_ids" t-as="approver">
+                                        <div class="mb-2">
+                                            <div><t t-esc="approver.user_id.name"/></div>
+                                            <!-- <div>
+                                                <span t-attf-class="badge bg-#{approver.status == 'approved' and 'success' or (approver.status == 'refused' and 'danger' or 'warning')}">
+                                                    <t t-esc="dict(approver._fields['status'].selection).get(approver.status)"/>
+                                                </span>
+                                            </div> -->
+                                        </div>
+                                    </t>
+                                </t>
+                                <t t-else="">
+                                    <div class="text-muted">尚未指派審批人</div>
+                                </t>
+                            </div>
+
+                            <div class="mb-4">
+                                <h5>審批類型</h5>
+                                <div><t t-esc="approval_request.category_id.name"/></div>
+                            </div>
+                        </div>
+
+                        <!-- 右側內容 -->
+                        <div class="col-10">
+                            <!-- 麵包屑 -->
+                            <nav aria-label="breadcrumb" class="mb-3">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="/approvals">審批系統</a></li>
+                                    <li class="breadcrumb-item">
+                                        <a t-attf-href="/approval/#{approval_request.category_id.id}">
+                                            <t t-esc="approval_request.category_id.name"/>
+                                        </a>
+                                    </li>
+                                    <li class="breadcrumb-item active" aria-current="page">
+                                        <t t-esc="approval_request.name"/>
+                                    </li>
+                                </ol>
+                            </nav>
+
+                            <!-- 狀態標籤區域 -->
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h3 style="font-size: 2.2rem;">
+                                    <span class="text-muted me-2" style="font-size: 2rem;"><t t-esc="approval_request.sequence_number"/></span>
+                                    <t t-esc="approval_request.name"/>
+                                </h3>
+                                <span 
+                                    t-attf-class="badge status-badge bg-#{approval_request.request_status == 'approved' and 'success' or (approval_request.request_status == 'refused' and 'danger' or (approval_request.request_status == 'pending' and 'warning' or 'secondary'))}" 
+                                    style="font-size: 2rem; padding: 1rem 2rem; font-weight: bold; min-width: 200px; text-align: center; border-radius: 12px; box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);"
+                                >
+                                    <t t-if="approval_request.request_status == 'approved'">已批准</t>
+                                    <t t-elif="approval_request.request_status == 'refused'">已退回</t>
+                                    <t t-elif="approval_request.request_status == 'pending'">待審批</t>
+                                    <t t-else="">
+                                        <t t-esc="dict(approval_request._fields['request_status'].selection).get(approval_request.request_status)"/>
+                                    </t>
+                                </span>
+                            </div>
+
+                            <!-- 調整後的退回原因區塊 -->
+                            <t t-if="approval_request.request_status == 'refused' and approval_request.refuse_reason">
+                                <div 
+                                    class="refuse-section" 
+                                    style="margin: 20px 0; padding: 15px; background-color: #FFF5F5; border: 2px solid #DC3545; border-radius: 8px;"
+                                >
+                                    <div 
+                                        class="refuse-title" 
+                                        style="color: #DC3545; font-size: 1.4rem; font-weight: bold; margin-bottom: 10px; padding-bottom: 6px;"
+                                    >
+                                        <i class="fa fa-exclamation-circle me-2"></i>退回原因：
+                                    </div>
+                                    <div 
+                                        class="refuse-content" 
+                                        style="font-size: 1.2rem; color: #721C24; padding: 10px; background-color: #FFFFFF; border-radius: 6px; border: 1px solid #DC3545;"
+                                    >
+                                        <t t-esc="approval_request.refuse_reason"/>
+                                    </div>
+                                </div>
+                            </t>
+
+                            <!-- 時間資訊 -->
+                            <div class="row mb-4">
+                                <div class="col-md-4">
+                                    <div class="mb-2">
+                                        <strong>申請時間：</strong>
+                                        <t t-esc="approval_request.create_date.strftime('%Y-%m-%d %H:%M')"/>
+                                    </div>
+                                    <div class="mb-2">
+                                        <strong>計畫開始日期：</strong>
+                                        <t t-if="approval_request.date_start">
+                                            <t t-esc="approval_request.date_start.strftime('%Y-%m-%d %H:%M')"/>
+                                        </t>
+                                    </div>
+                                    <div>
+                                        <strong>計畫結束日期：</strong>
+                                        <t t-if="approval_request.date_end">
+                                            <t t-esc="approval_request.date_end.strftime('%Y-%m-%d %H:%M')"/>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 說明區 -->
+                            <div class="mb-4">
+                                <h5>申請說明</h5>
+                                <div class="bg-light p-3 rounded">
+                                    <t t-if="approval_request.reason">
+                                        <t t-esc="approval_request.reason"/>
+                                    </t>
+                                    <t t-else="">
+                                        <div class="text-muted">無申請說明</div>
+                                    </t>
+                                </div>
+                            </div>
+                            <!-- 退回歷史紀錄 -->
+                            <t t-if="approval_request.sudo().refuse_history_ids">
+                                <div class="mb-4">
+                                    <h5>退回紀錄</h5>
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>退回時間</th>
+                                                    <th>退回人</th>
+                                                    <th>退回原因</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <t t-foreach="approval_request.sudo().refuse_history_ids" t-as="history">
+                                                    <tr>
+                                                        <td><t t-esc="history.refuse_date.strftime('%Y-%m-%d %H:%M')"/></td>
+                                                        <td><t t-esc="history.refuse_user_id.name"/></td>
+                                                        <td><t t-esc="history.refuse_reason"/></td>
+                                                    </tr>
+                                                </t>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </t>
+                            <!-- 審批歷史 -->
+                            <div>
+                                <h5>審批歷史</h5>
+                                <div class="messages">
+                                    <t t-foreach="approval_request.message_ids" t-as="message">
+                                        <div class="message border-bottom pb-3 mb-3">
+                                            <div class="d-flex justify-content-between">
+                                                <strong><t t-esc="message.author_id.name"/></strong>
+                                                <small class="text-muted">
+                                                    <t t-esc="message.create_date.strftime('%Y-%m-%d %H:%M')"/>
+                                                </small>
+                                            </div>
+                                            <div class="mt-2"><t t-raw="message.body"/></div>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+    </data>
+</odoo>

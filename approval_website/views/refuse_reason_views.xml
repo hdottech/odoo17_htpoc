@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>   
+        <record id="view_approval_request_refuse_wizard" model="ir.ui.view">
+            <field name="name">approval.request.refuse.wizard.form</field>
+            <field name="model">approval.request.refuse.wizard</field>
+            <field name="arch" type="xml">
+                <form string="退回原因">
+                    <group>
+                        <field name="request_id" invisible="1"/>
+                        <field name="refuse_reason" placeholder="請輸入退回原因..."/>
+                    </group>
+                    <footer>
+                        <button name="action_refuse" string="確認退回" type="object" class="btn-primary"/>
+                        <button string="取消" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- Wizard 動作 -->
+        <record id="action_approval_request_refuse" model="ir.actions.act_window">
+            <field name="name">退回申請</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">approval.request.refuse.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="context">{'default_request_id': active_id}</field>
+        </record>
+
+        <!-- 繼承表單視圖 -->
+        <record id="approval_request_view_form_inherit" model="ir.ui.view">
+            <field name="name">approval.request.form.inherit</field>
+            <field name="model">approval.request</field>
+            <field name="inherit_id" ref="approvals.approval_request_view_form"/>
+            <field name="arch" type="xml">
+                <field name="user_status" position="after">
+                    <field name="request_status" invisible="1"/>
+                </field>
+                <button name="action_refuse" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </button>
+                <button name="action_refuse" position="after">
+                    <button name="action_refuse" 
+                            string="退回" 
+                            type="object" 
+                            class="btn-danger"
+                            invisible="request_status != 'pending' "/>
+                </button>
+                <notebook position="inside">
+                    <page string="退回歷史" name="refuse_history">
+                        <field name="refuse_history_ids" readonly="1">
+                            <tree>
+                                <field name="refuse_date"/>
+                                <field name="refuse_user_id"/>
+                                <field name="refuse_reason"/>
+                            </tree>
+                        </field>
+                    </page>
+                </notebook>
+            </field>
+        </record>
+    </data>
+</odoo>
