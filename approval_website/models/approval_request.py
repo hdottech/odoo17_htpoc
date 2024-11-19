@@ -9,13 +9,7 @@ class ApprovalRequest(models.Model):
 
     # 新增序號欄位
     sequence_number = fields.Char('序號', readonly=True, copy=False)
-    company_state = fields.Many2one(
-        'company_state',
-        string='案場',
-        required=True,
-        tracking=True,
-        help='選擇此審批請求的發起案場'
-    )
+
     planned_date_begin = fields.Datetime(string='計劃開始日期')
     planned_date_end = fields.Datetime(string='計劃結束日期')  
     display_date_begin = fields.Char(
