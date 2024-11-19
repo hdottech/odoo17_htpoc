@@ -8,7 +8,7 @@ class SafetyCheck(models.Model):
     _inherit = 'approval.request'
 
     # 安全設施拆除相關欄位
-    # email = fields.Char(string='申請人信箱')
+    email = fields.Char(string='申請人信箱')
     removal_items = fields.Text(string='拆除項目')
     location = fields.Char(string='樓別/樓層/住位')
     removal_reason = fields.Text(string='拆除原因')

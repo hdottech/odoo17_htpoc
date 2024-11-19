@@ -9,7 +9,7 @@ class ApprovalRequest(models.Model):
 
     # 新增序號欄位
     sequence_number = fields.Char('序號', readonly=True, copy=False)
-
+    email = fields.Char(string='電子郵件', required=True, tracking=True)
     planned_date_begin = fields.Datetime(string='計劃開始日期')
     planned_date_end = fields.Datetime(string='計劃結束日期')  
     display_date_begin = fields.Char(

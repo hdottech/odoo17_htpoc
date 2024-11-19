@@ -12,3 +12,4 @@ class ApprovalRequest(models.Model):
     supervisor_phone = fields.Char(string='監工電話')
     safety_staff_name = fields.Char(string='工安人員')
     safety_staff_phone = fields.Char(string='工安電話')
+    email = fields.Char(string='電子郵件', required=True, tracking=True)
