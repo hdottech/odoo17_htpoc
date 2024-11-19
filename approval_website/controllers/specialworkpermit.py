@@ -26,7 +26,7 @@ class SpecialWorkPermitController(http.Controller):
             return request.render('approval_website.special_work_permit_form', values)
         except Exception as e:
             _logger.error(f"Error rendering special work permit form: {str(e)}")
-            return request.render('approval_website.vendor_form_error', {
+            return request.render('approval_website.error', {
                 'error': "系統錯誤，請稍後再試或聯繫管理員。"
             })
 
