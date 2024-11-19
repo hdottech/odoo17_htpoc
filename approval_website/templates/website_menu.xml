@@ -1,20 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate="0">
+    <data>
         <record id="menu_form_selection" model="website.menu">
             <field name="name">表單填寫</field>
             <field name="url">/form_selection</field>
             <field name="parent_id" ref="website.main_menu"/>
-            <field name="sequence" type="int">55</field>
-            <field name="website_id" ref="website.default_website"/>
+            <field name="sequence">55</field>
         </record>
 
         <record id="menu_website_approvals" model="website.menu">
             <field name="name">審批申請列表</field>
             <field name="url">/approvals</field>
             <field name="parent_id" ref="website.main_menu"/>
-            <field name="sequence" type="int">50</field>
-            <field name="website_id" ref="website.default_website"/>
+            <field name="sequence">50</field>
         </record>
     </data>
 </odoo>

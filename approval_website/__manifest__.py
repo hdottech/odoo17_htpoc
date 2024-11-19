@@ -44,9 +44,6 @@
         'views/approval_request.xml',
         'views/approval_type.xml',
         # 'views/res_users_views.xml',
-
-        # 'views/res_users_views.xml',
-
     ],
 
     'application': True,

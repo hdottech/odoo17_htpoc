@@ -11,5 +11,11 @@
             <field name="implementation">standard</field>
             <field name="use_date_range">True</field>
         </record>
+        <record id="mt_approval_created" model="mail.message.subtype">
+            <field name="name">許可單創建</field>
+            <field name="res_model">approval.request</field>
+            <field name="default" eval="True"/>
+            <field name="description">%(approval_type)s created</field>
+        </record>
     </data>
 </odoo>

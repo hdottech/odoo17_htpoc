@@ -5,17 +5,19 @@ from datetime import date
 from ..utils.date_utils import DateUtils
 
 class ApprovalRequest(models.Model):
-    _inherit = 'approval.request'
+    # _name = 'approval.request'
+    # _inherit =  ['approval.request', 'mail.thread', 'mail.activity.mixin']
+    _inherit ='approval.request'
 
     # 新增序號欄位
     sequence_number = fields.Char('序號', readonly=True, copy=False)
-    email = fields.Char(string='電子郵件', required=True, tracking=True)
     planned_date_begin = fields.Datetime(string='計劃開始日期')
     planned_date_end = fields.Datetime(string='計劃結束日期')  
     display_date_begin = fields.Char(
         string='開始日期',
         compute='_compute_display_dates'
     )
+    company_state = fields.Char(string='公司狀態')# 測試欄位(測試git功能)
     display_date_end = fields.Char(   
         string='結束日期',
         compute='_compute_display_dates'
@@ -50,11 +52,9 @@ class ApprovalRequest(models.Model):
             last_seq = self.search(domain, order='sequence_number desc', limit=1)
         
             if last_seq:
-                # 如果存在记录，获取最后的序号并加1
                 last_number = int(last_seq.sequence_number.split('-')[-1])
                 sequence = str(last_number + 1).zfill(3)
             else:
-                # 如果是当天第一笔，从001开始
                 sequence = '001'
            
                 
@@ -176,19 +176,3 @@ class ApprovalRequestRefuseHistory(models.Model):
     refuse_reason = fields.Text(string='退回原因')
     refuse_date = fields.Datetime(string='退回時間')
     refuse_user_id = fields.Many2one('res.users', string='退回人')
-
-
-# class ApprovalRequest(models.Model):
-#     _name = 'approval.request'
-#     _inherit = ['approval.request', 'mail.thread', 'mail.activity.mixin']
-
-#     # 添加安全規則
-#     def _compute_can_access(self):
-#         for record in self:
-#             record.can_access = (
-#                 record.request_owner_id == self.env.user or
-#                 self.env.user in record.approver_ids.mapped('user_id') or
-#                 self.env.user.has_group('approvals.group_approval_manager')
-#             )
-
-#     can_access = fields.Boolean(compute='_compute_can_access')

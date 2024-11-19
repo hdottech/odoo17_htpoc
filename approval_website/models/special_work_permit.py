@@ -3,7 +3,7 @@ from odoo.exceptions import ValidationError
 
 class SpecialWorkPermit(models.Model):
     _inherit = 'approval.request'
-    _description = '特殊作業許可單'
+    # _description = '特殊作業許可單'
 
     # 基本欄位
     email = fields.Char(string='電子郵件', tracking=True)

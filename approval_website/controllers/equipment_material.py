@@ -45,7 +45,7 @@ class EquipmentMaterialController(http.Controller):
                 raise ValidationError(_("找不到對應的審批類型"))
             
             # 驗證必填字段
-            required_fields = ['email', 'sub_contractor', 'main_contractor', 
+            required_fields = ['sub_contractor', 'main_contractor', 
                             'entry_date', 'contact_person', 'contact_phone', 'item_details']
             
             # 根據進場方式驗證相應必填字段

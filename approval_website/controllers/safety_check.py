@@ -83,12 +83,16 @@ class SafetyOperationController(http.Controller):
             # 處理文件上傳
             document_ids = []
             attachment_ids = []
+            all_folders = request.env['documents.folder'].sudo().search([])
+            _logger.info("所有資料夾:")
+            for folder in all_folders:
+                _logger.info(f"資料夾ID: {folder.id}, 名稱: {folder.name}")
             files = request.httprequest.files.getlist('attachment[]')
             
             if files:
                 # 先找到 Approvals 資料夾
                 approval_folder = request.env['documents.folder'].sudo().search([
-                    ('name', '=', '審批')
+                    ('name', '=', 'Approvals')
                 ], limit=1)
 
                 if not approval_folder:

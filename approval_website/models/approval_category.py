@@ -88,11 +88,3 @@ class ApprovalCategory(models.Model):
             })
 
         return category
-
-    def _get_user_approvers(self):
-        """獲取審批流程中的用戶"""
-        return [
-            ('承商工安', 1),
-            ('主承商工程師', 2),
-            ('UIS EHS', 3)
-        ]

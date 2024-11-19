@@ -50,7 +50,7 @@ class SpecialWorkPermitController(http.Controller):
 
             # 驗證必填字段
             required_fields = [
-                'email', 'apply_date', 'entry_work_time', 
+                'apply_date', 'entry_work_time', 
                 'planned_date_begin', 'planned_date_end', 'work_area',
                 'safety_supervisor', 'safety_supervisor_phone',
                 'work_supervisor', 'work_supervisor_phone'

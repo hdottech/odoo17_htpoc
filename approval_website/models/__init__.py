@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from . import refuse_reason_wizard
 from . import approval_request
-from . import approval_category
+# from . import approval_category
 from . import approval_type
 from . import safety_check
 from . import equipment_material
