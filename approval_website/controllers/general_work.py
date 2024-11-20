@@ -78,8 +78,8 @@ class TestWebsiteController(http.Controller):
                 'name': approval_type.name,  # 使用選擇的審批主題名稱
                 'email': 'no-email@example.com', # 提供預設值
                 'approval_type_id': approval_type.id,  # 關聯審批主題
-                'planned_date_begin':start_local,
-                'planned_date_end':  end_local,
+                'planned_date_begin':start_dt,
+                'planned_date_end':  end_dt,
                 'main_contractor_id': main_contractor.id,
                 'sub_contractor_id': sub_contractor.id,
                 'reason': f"""
