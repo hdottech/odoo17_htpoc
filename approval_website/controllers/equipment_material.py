@@ -54,12 +54,12 @@ class EquipmentMaterialController(http.Controller):
                 raise ValidationError(_("請至少選擇一種進場方式"))
             
             # 堆高機相關驗證
-            if '堆高機' in entry_methods:
-                forklift_qualified = post.get('forklift_qualified')
-                if not forklift_qualified:
-                    raise ValidationError(_("請選擇堆高機工區合格標籤"))
-                if forklift_qualified == 'no':
-                    raise ValidationError(_("堆高機必須有工區合格標籤才能進場"))
+            # if '堆高機' in entry_methods:
+            #     forklift_qualified = post.get('forklift_qualified')
+            #     if not forklift_qualified:
+            #         raise ValidationError(_("請選擇堆高機工區合格標籤"))
+            #     if forklift_qualified == 'no':
+            #         raise ValidationError(_("堆高機必須有工區合格標籤才能進場"))
 
             # 吊掛相關驗證
             if '吊掛' in entry_methods:
@@ -88,14 +88,6 @@ class EquipmentMaterialController(http.Controller):
             entry_date = post.get('entry_date')
             if not entry_date:
                 raise ValidationError(_("請選擇進場日期"))
-            # try:
-            #     # 如果 entry_date 本身已是帶時區的 datetime，則移除時區資訊
-            #     naive_date = datetime.strptime(entry_date, '%Y-%m-%d').strftime('%Y-%m-%d')
-
-            #     # 使用 DateUtils 設置時間範圍
-            #     start_time, end_time = DateUtils.set_time_range(naive_date)
-            #     _logger.info(f"時間轉換 - 開始: {start_time}, 結束: {end_time}")
-
             try:
                 # 將 entry_date 固定為當天的 08:00 和 18:00
                 planned_date_begin = datetime.strptime(entry_date, '%Y-%m-%d') + timedelta(hours=8)
@@ -153,15 +145,12 @@ class EquipmentMaterialController(http.Controller):
                 """
 
             if '堆高機' in entry_methods:
-                if post.get('forklift_qualified') == 'yes':
-                    description += f"""
-                        <tr>
-                            <th>堆高機工區合格標籤：</th>
-                            <td>有</td>
-                        </tr>
-                    """
-                else:
-                    raise ValidationError(_("堆高機必須有工區合格標籤才能進場"))
+                description += f"""
+                    <tr>
+                        <th>堆高機工區合格標籤：</th>
+                        <td>{'有' if post.get('forklift_qualified') == 'yes' else '無'}</td>
+                    </tr>
+                """
 
             if '吊掛' in entry_methods:
                 description += f"""
@@ -228,10 +217,12 @@ class EquipmentMaterialController(http.Controller):
             if '貨車' in entry_methods:
                 approval_vals['truck_details'] = post.get('truck_details')
             if '堆高機' in entry_methods:
-                if post.get('forklift_qualified') == 'yes':
-                    approval_vals['forklift_operator_qualified'] = 'yes'
-                else:
-                    raise ValidationError(_("堆高機必須有工區合格標籤才能進場"))
+                approval_vals['forklift_operator_qualified'] = post.get('forklift_qualified', 'no')
+            # if '堆高機' in entry_methods:
+            #     if post.get('forklift_qualified') == 'yes':
+            #         approval_vals['forklift_operator_qualified'] = 'yes'
+            #     else:
+            #         raise ValidationError(_("堆高機必須有工區合格標籤才能進場"))
 
             if '吊掛' in entry_methods:
                 approval_vals['forklift_details'] = post.get('crane_model')

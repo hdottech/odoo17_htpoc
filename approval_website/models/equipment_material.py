@@ -24,10 +24,10 @@ class EquipmentMaterialEntry(models.Model):
         ('yes', '有'),
         ('no', '無')
     ], string='堆高機工區合格標籤', tracking=True)
-    crane_model = fields.Char(string='吊掛型號', tracking=True)
-    crane_tonnage = fields.Float(string='吊掛噸數', tracking=True)
-    other_model_1 = fields.Char(string='其他型號-1', tracking=True)
-    other_model_2 = fields.Char(string='其他型號-2', tracking=True)
+    forklift_details = fields.Char(string='吊掛型號', tracking=True)
+    forklift_count = fields.Float(string='吊掛噸數', tracking=True)
+    other_details1 = fields.Char(string='其他型號-1', tracking=True)
+    other_details2 = fields.Char(string='其他型號-2', tracking=True)
 
     @api.model
     def _get_default_datetime_range(self, date):

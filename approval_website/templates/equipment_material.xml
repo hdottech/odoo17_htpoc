@@ -248,130 +248,6 @@
                                 </div>
                             </div>
 
-                             <!-- JavaScript 控制顯示/隱藏 -->
-                            <script type="text/javascript">
-                                function toggleAdditionalFields() {
-                                    // 獲取所有checkbox
-                                    var truckCheck = document.getElementById('truck_check');
-                                    var forkliftCheck = document.getElementById('forklift_check');
-                                    var craneCheck = document.getElementById('crane_check');
-                                    var otherCheck = document.getElementById('other_check');
-
-                                    // 獲取所有額外欄位區域
-                                    var truckDetailsDiv = document.getElementById('truck_details_div');
-                                    var forkliftQualifiedDiv = document.getElementById('forklift_qualified_div');
-                                    var craneDetailsDiv = document.getElementById('crane_details_div');
-                                    var otherDetailsDiv = document.getElementById('other_details_div');
-
-                                    // 控制貨車欄位
-                                    truckDetailsDiv.style.display = truckCheck.checked ? 'block' : 'none';
-                                    var truckNumber = document.getElementById('truck_number');
-                                    if (truckNumber) {
-                                        truckNumber.required = truckCheck.checked;
-                                    }
-
-                                    // 堆高機驗證
-                                    var forkliftCheck = document.getElementById('forklift_check');
-                                    var forkliftQualifiedDiv = document.getElementById('forklift_qualified_div');
-                                    
-                                    if (forkliftCheck.checked) {
-                                        forkliftQualifiedDiv.style.display = 'block';
-                                        // 添加radio buttons的change事件監聽
-                                        var forkliftQualifiedYes = document.getElementById('forklift_qualified_yes');
-                                        var forkliftQualifiedNo = document.getElementById('forklift_qualified_no');
-                                        
-                                        forkliftQualifiedNo.addEventListener('change', function() {
-                                            if (this.checked) {
-                                                alert('注意：堆高機必須有工區合格標籤才能進場');
-                                                forkliftCheck.checked = false;
-                                                forkliftQualifiedDiv.style.display = 'none';
-                                                forkliftQualifiedYes.checked = false;
-                                                forkliftQualifiedNo.checked = false;
-                                            }
-                                        });
-                                    } else {
-                                        forkliftQualifiedDiv.style.display = 'none';
-                                    }
-                                
-
-
-                                    // 控制吊掛欄位
-                                    craneDetailsDiv.style.display = craneCheck.checked ? 'block' : 'none';
-                                    var craneModel = document.getElementById('crane_model');
-                                    var craneTonnage = document.getElementById('crane_tonnage');
-                                    if (craneModel) {
-                                        craneModel.required = craneCheck.checked;
-                                    }
-                                    if (craneTonnage) {
-                                        craneTonnage.required = craneCheck.checked;
-                                    }
-
-                                    // 控制其他欄位
-                                    otherDetailsDiv.style.display = otherCheck.checked ? 'block' : 'none';
-                                    var otherModel1 = document.getElementById('other_model_1');
-                                    var otherModel2 = document.getElementById('other_model_2');
-                                    if (otherModel1) {
-                                        otherModel1.required = otherCheck.checked;
-                                    }
-                                    if (otherModel2) {
-                                        otherModel2.required = otherCheck.checked;
-                                    }
-                                }
-
-                                // 表單提交驗證
-                                document.getElementById('equipment_material_form').onsubmit = function(e) {
-                                    // 檢查是否有選擇進場方式
-                                    var entryMethods = document.querySelectorAll('input[name="entry_method"]:checked');
-                                    if (entryMethods.length === 0) {
-                                        alert('請至少選擇一種進場方式');
-                                        e.preventDefault();
-                                        return false;
-                                    }
-
-                                    // 堆高機驗證
-                                    var forkliftCheck = document.getElementById('forklift_check');
-                                    if (forkliftCheck.checked) {
-                                        var forkliftQualifiedYes = document.getElementById('forklift_qualified_yes');
-                                        var forkliftQualifiedNo = document.getElementById('forklift_qualified_no');
-                                        
-                                        // 檢查是否選擇了合格標籤
-                                        var isQualifiedSelected = false;
-                                        if (forkliftQualifiedYes.checked) {
-                                            isQualifiedSelected = true;
-                                        }
-                                        if (forkliftQualifiedNo.checked) {
-                                            isQualifiedSelected = true;
-                                        }
-                                        
-                                        if (!isQualifiedSelected) {
-                                            alert('請選擇堆高機工區合格標籤');
-                                            e.preventDefault();
-                                            return false;
-                                        }
-                                        
-                                        if (forkliftQualifiedNo.checked) {
-                                            alert('堆高機必須有工區合格標籤才能進場');
-                                            e.preventDefault();
-                                            return false;
-                                        }
-                                    }
-
-                                    return true;
-                                };
-
-                                // 頁面加載時初始化
-                                document.addEventListener('DOMContentLoaded', function() {
-                                    toggleAdditionalFields();
-                                    
-                                    // 為所有進場方式的 checkbox 添加事件監聽
-                                    var checkboxes = document.querySelectorAll('.entry-method-checkbox');
-                                    checkboxes.forEach(function(checkbox) {
-                                        checkbox.addEventListener('change', toggleAdditionalFields);
-                                    });
-                                });
-                            </script>
-
-
                             <!-- 動態欄位 -->
                             <div id="additional_fields" style="display: none;">
                                 <!-- 動態欄位將通過 JavaScript 添加 -->
@@ -441,6 +317,81 @@
                         </ol>
                     </div>
                 </div>
+                <!-- 加入 JavaScript -->
+                <script type="text/javascript">
+                    function toggleAdditionalFields() {
+                        // 獲取所有checkbox
+                        var truckCheck = document.getElementById('truck_check');
+                        var forkliftCheck = document.getElementById('forklift_check');
+                        var craneCheck = document.getElementById('crane_check');
+                        var otherCheck = document.getElementById('other_check');
+
+                        // 獲取所有額外欄位區域
+                        var truckDetailsDiv = document.getElementById('truck_details_div');
+                        var forkliftQualifiedDiv = document.getElementById('forklift_qualified_div');
+                        var craneDetailsDiv = document.getElementById('crane_details_div');
+                        var otherDetailsDiv = document.getElementById('other_details_div');
+
+                        // 控制貨車欄位
+                        truckDetailsDiv.style.display = truckCheck.checked ? 'block' : 'none';
+                        var truckNumber = document.getElementById('truck_number');
+                        if (truckNumber) {
+                            truckNumber.required = truckCheck.checked;
+                        }
+
+                        // 堆高機欄位顯示控制（移除驗證限制）
+                        if (forkliftCheck.checked) {
+                            forkliftQualifiedDiv.style.display = 'block';
+                        } else {
+                            forkliftQualifiedDiv.style.display = 'none';
+                        }
+
+                        // 控制吊掛欄位
+                        craneDetailsDiv.style.display = craneCheck.checked ? 'block' : 'none';
+                        var craneModel = document.getElementById('crane_model');
+                        var craneTonnage = document.getElementById('crane_tonnage');
+                        if (craneModel) {
+                            craneModel.required = craneCheck.checked;
+                        }
+                        if (craneTonnage) {
+                            craneTonnage.required = craneCheck.checked;
+                        }
+
+                        // 控制其他欄位
+                        otherDetailsDiv.style.display = otherCheck.checked ? 'block' : 'none';
+                        var otherModel1 = document.getElementById('other_model_1');
+                        var otherModel2 = document.getElementById('other_model_2');
+                        if (otherModel1) {
+                            otherModel1.required = otherCheck.checked;
+                        }
+                        if (otherModel2) {
+                            otherModel2.required = otherCheck.checked;
+                        }
+                    }
+
+                    // 表單提交驗證
+                    document.getElementById('equipment_material_form').onsubmit = function(e) {
+                        // 檢查是否有選擇進場方式
+                        var entryMethods = document.querySelectorAll('input[name="entry_method"]:checked');
+                        if (entryMethods.length === 0) {
+                            alert('請至少選擇一種進場方式');
+                            e.preventDefault();
+                            return false;
+                        }
+                        return true;
+                    };
+
+                    // 頁面加載時初始化
+                    document.addEventListener('DOMContentLoaded', function() {
+                        toggleAdditionalFields();
+                        
+                        // 為所有進場方式的 checkbox 添加事件監聽
+                        var checkboxes = document.querySelectorAll('.entry-method-checkbox');
+                        checkboxes.forEach(function(checkbox) {
+                            checkbox.addEventListener('change', toggleAdditionalFields);
+                        });
+                    });
+                </script>
 
                 
             </div>

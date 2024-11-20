@@ -64,11 +64,6 @@ class TestWebsiteController(http.Controller):
 
             start_local = pytz.UTC.localize(start_dt).astimezone(local_tz)
             end_local = pytz.UTC.localize(end_dt).astimezone(local_tz)
-            
-
-        
-            
-
 
             # 創建任務值
             vals = {
@@ -76,7 +71,7 @@ class TestWebsiteController(http.Controller):
                 'request_owner_id': request.env.user.id,
                 'request_status': 'new',
                 'name': approval_type.name,  # 使用選擇的審批主題名稱
-                'email': 'no-email@example.com', # 提供預設值
+                # 'email': 'no-email@example.com', # 提供預設值
                 'approval_type_id': approval_type.id,  # 關聯審批主題
                 'planned_date_begin':start_dt,
                 'planned_date_end':  end_dt,
@@ -86,8 +81,10 @@ class TestWebsiteController(http.Controller):
                     <h3>一般作業申請表單詳情：</h3>
                     <table class="table table-bordered">
                         <tr><th>審批主題</th><td>{approval_type.name}</td></tr>
+                        <tr><th>申請人信箱</th><td>{post.get('email')}</td></tr>
                         <tr><th>主承商</th><td>{main_contractor.name}</td></tr>
                         <tr><th>次承商</th><td>{sub_contractor.name}</td></tr>
+                        <tr><th>施工內容</th><td>{post.get('work_content')}</td></tr>
                         <tr><th>施工區位置</th><td>{post.get('work_location')}</td></tr>
                         <tr><th>施工人數</th><td>{post.get('worker_count')}</td></tr>
                         <tr><th>監工人員</th><td>{post.get('supervisor_name')}</td></tr>
