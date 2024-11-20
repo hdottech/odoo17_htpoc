@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!-- 權限規則：可以更新的數據 -->
     <data noupdate="0">
         <!-- 系統管理員完整權限規則 -->
         <record id="approval_request_admin_rule" model="ir.rule">
@@ -12,18 +13,6 @@
             <field name="perm_create" eval="True"/>
             <field name="perm_unlink" eval="True"/>
         </record>
-
-        <!-- 審批管理員權限規則 -->
-        <!-- <record id="approval_request_manager_rule" model="ir.rule">
-            <field name="name">Approval Manager Access Rule</field>
-            <field name="model_id" ref="approvals.model_approval_request"/>
-            <field name="domain_force">[(1, '=', 1)]</field>
-            <field name="groups" eval="[(4, ref('approval.group_approval_manager'))]"/>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="True"/>
-            <field name="perm_create" eval="True"/>
-            <field name="perm_unlink" eval="True"/>
-        </record> -->
 
         <!-- 一般內部用戶規則 -->
         <record id="approval_request_user_rule" model="ir.rule">
@@ -74,6 +63,7 @@
             <field name="perm_create" eval="0"/>
             <field name="perm_unlink" eval="0"/>
         </record>
+
         <record id="approval_request_personal_rule" model="ir.rule">
             <field name="name">Personal Approval Requests</field>
             <field name="model_id" ref="model_approval_request"/>
@@ -84,6 +74,27 @@
                 ('create_uid', '=', user.id)
             ]</field>
             <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+    </data>
+
+    <!-- 序列和消息類型：不可更新的數據 -->
+    <data noupdate="1">
+        <record id="seq_approval_request_daily" model="ir.sequence">
+            <field name="name">Daily Approval Request Sequence</field>
+            <field name="code">approval.request.daily.sequence</field>
+            <field name="prefix">%(y)s%(month)s%(day)s-</field>
+            <field name="padding">3</field>
+            <field name="number_increment">1</field>
+            <field name="number_next">1</field>
+            <field name="implementation">standard</field>
+            <field name="use_date_range">True</field>
+        </record>
+
+        <record id="mt_approval_created" model="mail.message.subtype">
+            <field name="name">許可單創建</field>
+            <field name="res_model">approval.request</field>
+            <field name="default" eval="True"/>
+            <field name="description">%(approval_type)s created</field>
         </record>
     </data>
 </odoo>

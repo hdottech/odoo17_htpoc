@@ -1,9 +1,10 @@
 from odoo import http, fields, _
 from odoo.http import request
-from datetime import datetime
+from datetime import datetime,timedelta
 import logging
 from ..utils.date_utils import DateUtils
 from odoo.exceptions import ValidationError
+import pytz
 
 _logger = logging.getLogger(__name__)
 
@@ -32,6 +33,7 @@ class TestWebsiteController(http.Controller):
     def vendor_submit(self, **post):
         try:
             _logger.info("開始處理一般作業申請表單提交")
+            _logger.info(f"收到的原始日期 - 開始: {post.get('date_assign')}, 結束: {post.get('date_end')}")
             
             # 獲取審批主題
             approval_type = request.env['approval.type'].sudo().browse(int(post.get('approval_type_id')))
@@ -46,16 +48,27 @@ class TestWebsiteController(http.Controller):
             main_contractor = request.env['new.res.partner.company'].sudo().browse(int(post.get('main_contractor')))
             sub_contractor = request.env['new.res.partner.company'].sudo().browse(int(post.get('sub_contractor')))
             
-            # 修改時間格式，將結束時間設為 18:00:00
-            start_datetime = f"{post.get('date_assign')} 00:00:00"
-            end_datetime = DateUtils.set_end_time(post.get('date_end'))  # 使用 DateUtils
+            # 本地時區
+            local_tz = pytz.timezone('Asia/Taipei')
+            _logger.info(f"使用時區: {local_tz}")
 
-            # 日期驗證
-            start_date = datetime.strptime(post.get('date_assign'), '%Y-%m-%d')
-            end_date = datetime.strptime(post.get('date_end'), '%Y-%m-%d')
-            delta = end_date - start_date
-            if delta.days + 1 > 7:
-                raise ValidationError(_("日期範圍不能超過7天"))
+            # 處理開始時間和結束時間
+            start_dt = DateUtils.convert_to_utc(post.get('date_assign'), '08:00:00')
+            end_dt = DateUtils.convert_to_utc(post.get('date_end'), '18:00:00')
+            _logger.info(f"最終存儲的 UTC 時間 - 開始: {start_dt}, 結束: {end_dt}")
+
+            # 移除時區資訊
+            start_dt_naive = start_dt.replace(tzinfo=None)
+            end_dt_naive = end_dt.replace(tzinfo=None)
+            _logger.info(f"準備存儲的時間 - 開始: {start_dt_naive}, 結束: {end_dt_naive}")
+
+            start_local = pytz.UTC.localize(start_dt).astimezone(local_tz)
+            end_local = pytz.UTC.localize(end_dt).astimezone(local_tz)
+            
+
+        
+            
+
 
             # 創建任務值
             vals = {
@@ -65,8 +78,8 @@ class TestWebsiteController(http.Controller):
                 'name': approval_type.name,  # 使用選擇的審批主題名稱
                 'email': 'no-email@example.com', # 提供預設值
                 'approval_type_id': approval_type.id,  # 關聯審批主題
-                'planned_date_begin': start_datetime,
-                'planned_date_end': end_datetime,
+                'planned_date_begin':start_local,
+                'planned_date_end':  end_local,
                 'main_contractor_id': main_contractor.id,
                 'sub_contractor_id': sub_contractor.id,
                 'reason': f"""
@@ -87,6 +100,7 @@ class TestWebsiteController(http.Controller):
 
             # 創建審批請求
             approval_request = request.env['approval.request'].sudo().create(vals)
+            _logger.debug(f"原始資料：{post}")
 
             # 確認請求
             approval_request.sudo().action_confirm()
@@ -95,8 +109,8 @@ class TestWebsiteController(http.Controller):
                 'approval_request': approval_request,
                 'request_number': approval_request.name,
                 'status': '等待審批',
-                'planned_date_begin': start_datetime,
-                'planned_date_end': end_datetime
+                'planned_date_begin': start_local,
+                'planned_date_end': end_local
             })
 
         except Exception as e:

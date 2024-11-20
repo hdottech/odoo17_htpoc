@@ -147,13 +147,13 @@
                         <td><t t-esc="req.name"/></td>
                         <td><t t-esc="req.request_owner_id.name"/></td>
                         <td>
-                            <t t-if="req.date_start">
-                                <t t-esc="req.date_start.strftime('%Y-%m-%d %H:%M')"/>
+                            <t t-if="req.planned_date_begin">
+                                <t t-esc="req.with_context(tz='Asia/Taipei').planned_date_begin.strftime('%Y-%m-%d')"/>
                             </t>
                         </td>
                         <td>
-                            <t t-if="req.date_end">
-                                <t t-esc="req.date_end.strftime('%Y-%m-%d %H:%M')"/>
+                            <t t-if="req.planned_date_end">
+                                <t t-esc="req.with_context(tz='Asia/Taipei').planned_date_end.strftime('%Y-%m-%d')"/>
                             </t>
                         </td>
                         <td>

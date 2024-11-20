@@ -17,7 +17,6 @@ class ApprovalRequest(models.Model):
         string='開始日期',
         compute='_compute_display_dates'
     )
-    company_state = fields.Char(string='公司狀態')# 測試欄位(測試git功能)
     display_date_end = fields.Char(   
         string='結束日期',
         compute='_compute_display_dates'
@@ -39,6 +38,7 @@ class ApprovalRequest(models.Model):
     
     def create(self, vals):
     # 生成序號(年月日-流水號)
+        
         if not vals.get('sequence_number'):
             today = date.today()
             prefix = today.strftime('%Y%m%d-')

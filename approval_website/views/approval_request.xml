@@ -19,7 +19,8 @@
                 </field>
             </field>
         </record>
-        <!-- 表單視圖 -->
+
+        <!-- 表單視圖 - 序號和日期 -->
         <record id="view_approval_request_type_inherit" model="ir.ui.view">
             <field name="name">approval.request.form.inherit</field>
             <field name="model">approval.request</field>
@@ -41,8 +42,10 @@
                 </xpath>
             </field> 
         </record>
+
+        <!-- 表單視圖 - 退回功能 -->
         <record id="approval_request_view_form_inherit" model="ir.ui.view">
-            <field name="name">approval.request.form.inherit</field>
+            <field name="name">approval.request.form.refuse.inherit</field>
             <field name="model">approval.request</field>
             <field name="inherit_id" ref="approvals.approval_request_view_form"/>
             <field name="arch" type="xml">
@@ -67,23 +70,6 @@
                         </field>
                     </page>
                 </notebook>
-            </field>
-        </record>
-        <record id="view_approval_request_type_inherit" model="ir.ui.view">
-            <field name="name">approval.request.form.inherit</field>
-            <field name="model">approval.request</field>
-            <field name="inherit_id" ref="approvals.approval_request_view_form"/>
-            <field name="arch" type="xml">
-                <!-- 你現有的修改 -->
-                
-                <!-- 添加郵件追蹤器 -->
-                <!-- <xpath expr="//form" position="inside">
-                    <div class="oe_chatter">
-                        <field name="message_follower_ids" widget="mail_followers"/>
-                        <field name="activity_ids" widget="mail_activity"/>
-                        <field name="message_ids" widget="mail_thread"/>
-                    </div>
-                </xpath> -->
             </field>
         </record>
     </data>

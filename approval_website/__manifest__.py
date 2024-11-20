@@ -28,7 +28,7 @@
     'data': [
         'security/ir.model.access.csv',
         'security/securityrules.xml',
-        'data/sequence.xml',
+        # 'data/sequence.xml',
         'views/refuse_reason_views.xml',
         'templates/website_menu.xml',
         'templates/form_selection_template.xml',

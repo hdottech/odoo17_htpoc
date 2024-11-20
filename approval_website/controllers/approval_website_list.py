@@ -20,9 +20,9 @@ class WebsiteController(http.Controller):
         # _logger.info(f"用戶組: {current_user.groups_id.mapped('name')}")
         _logger.info(f"是否為管理員: {is_manager}")
         requests = request.env['approval.request'].search([])
-        for req in requests:
-            _logger.info(f"Request {req.id} fields: {req._fields.keys()}")
-            _logger.info(f"Request {req.id} refuse_reason: {hasattr(req, 'refuse_reason')}")
+        # for req in requests:
+        #     _logger.info(f"Request {req.id} fields: {req._fields.keys()}")
+        #     _logger.info(f"Request {req.id} refuse_reason: {hasattr(req, 'refuse_reason')}")
         
         # 獲取所有審批類型
         categories = request.env['approval.category'].search([])
@@ -105,7 +105,7 @@ class WebsiteController(http.Controller):
             domain,
             order='sequence_number desc'  # 審批編號降序排序
         )
-        _logger.info(f"找到的審批請求數量: {len(requests)}")
+        # _logger.info(f"找到的審批請求數量: {len(requests)}")
 
         # 審批請求查詢與分組處理
         grouped_requests = []
@@ -152,7 +152,7 @@ class WebsiteController(http.Controller):
                 if no_deadline_requests:
                     grouped_requests.append({'name': '無期限', 'requests': no_deadline_requests})
 
-        _logger.info(f"最終搜索條件: {domain}")
+        # _logger.info(f"最終搜索條件: {domain}")
         # 保存搜尋前的展開狀態
         expand_state = kw.get('expand_state', 'all')
 

@@ -33,7 +33,7 @@ class RefuseReasonWizard(models.TransientModel):
 
             # 添加系統訊息
             self.request_id.message_post(
-                body=f'申請已被退回。<br/>退回原因：{self.refuse_reason}',
+                body=f'申請已被退回。退回原因：{self.refuse_reason}',
                 message_type='notification',
                 subtype_id=self.env.ref('mail.mt_note').id
             )

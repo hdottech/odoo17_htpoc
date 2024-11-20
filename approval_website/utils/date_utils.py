@@ -71,10 +71,6 @@ class DateUtils:
         if not date_str:
             return False, False
             
-        # start_dt = datetime.strptime(f"{date_str} {start_time}", '%Y-%m-%d %H:%M:%S')
-        # end_dt = datetime.strptime(f"{date_str} {end_time}", '%Y-%m-%d %H:%M:%S')
-
-        # return start_dt, end_dt
         # 創建本地時間
         local_tz = pytz.timezone('Asia/Taipei')
         

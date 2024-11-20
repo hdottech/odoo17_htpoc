@@ -9,5 +9,5 @@ access_approval_category_portal,approval.category.portal.user,approvals.model_ap
 access_approval_approver_portal,approval.approver.portal.user,approvals.model_approval_approver,base.group_portal,1,0,0,0
 access_approval_product_line_portal,approval.product.line.portal.user,approvals.model_approval_product_line,base.group_portal,1,1,1,0
 access_approval_request_refuse_wizard,access.approval.request.refuse.wizard,model_approval_request_refuse_wizard,approvals.group_approval_user,1,1,1,1
-access_approval_request_refuse_history,access.approval.request.refuse.history,model_approval_request_refuse_history,approvals.group_approval_user,1,0,0,0
+access_approval_request_refuse_history,access.approval.request.refuse.history,model_approval_request_refuse_history,approvals.group_approval_user,1,1,1,0
 access_approval_request_refuse_history_user,access.approval.request.refuse.history.user,model_approval_request_refuse_history,base.group_user,1,0,0,0

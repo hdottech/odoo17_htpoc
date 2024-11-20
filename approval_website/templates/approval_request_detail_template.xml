@@ -99,18 +99,18 @@
                                 <div class="col-md-4">
                                     <div class="mb-2">
                                         <strong>申請時間：</strong>
-                                        <t t-esc="approval_request.create_date.strftime('%Y-%m-%d %H:%M')"/>
+                                        <t t-esc="approval_request.with_context(tz='Asia/Taipei').create_date.strftime('%Y-%m-%d %H:%M')"/>
                                     </div>
                                     <div class="mb-2">
                                         <strong>計畫開始日期：</strong>
-                                        <t t-if="approval_request.date_start">
-                                            <t t-esc="approval_request.date_start.strftime('%Y-%m-%d %H:%M')"/>
+                                        <t t-if="approval_request.planned_date_begin">
+                                            <t t-esc="approval_request.with_context(tz='Asia/Taipei').planned_date_begin.strftime('%Y-%m-%d')"/>
                                         </t>
                                     </div>
                                     <div>
                                         <strong>計畫結束日期：</strong>
-                                        <t t-if="approval_request.date_end">
-                                            <t t-esc="approval_request.date_end.strftime('%Y-%m-%d %H:%M')"/>
+                                        <t t-if="approval_request.planned_date_end">
+                                            <t t-esc="approval_request.with_context(tz='Asia/Taipei').planned_date_end.strftime('%Y-%m-%d')"/>
                                         </t>
                                     </div>
                                 </div>
