@@ -77,13 +77,13 @@
                 <!-- 你現有的修改 -->
                 
                 <!-- 添加郵件追蹤器 -->
-                <xpath expr="//form" position="inside">
+                <!-- <xpath expr="//form" position="inside">
                     <div class="oe_chatter">
                         <field name="message_follower_ids" widget="mail_followers"/>
                         <field name="activity_ids" widget="mail_activity"/>
                         <field name="message_ids" widget="mail_thread"/>
                     </div>
-                </xpath>
+                </xpath> -->
             </field>
         </record>
     </data>
