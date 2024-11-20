@@ -1,6 +1,7 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
-from datetime import datetime
+from datetime import time,datetime
+import pytz
 
 class EquipmentMaterialEntry(models.Model):
     _inherit = 'approval.request'
@@ -30,12 +31,23 @@ class EquipmentMaterialEntry(models.Model):
 
     @api.model
     def _get_default_datetime_range(self, date):
-        """設定默認的時間範圍 (早上8點到下午6點)"""
+        """設定默認的時間範圍 (早上8點到下午6點) 並轉換為 UTC"""
         if not date:
             return False, False
-        start_time = datetime.combine(date, datetime.min.time().replace(hour=8, minute=0))
-        end_time = datetime.combine(date, datetime.min.time().replace(hour=18, minute=0))
-        return start_time, end_time
+        
+        local_tz = pytz.timezone('Asia/Taipei')
+
+        # 開始時間
+        start_naive = datetime.combine(date, time(hour=8, minute=0))
+        start_localized = local_tz.localize(start_naive)  # 加入時區資訊
+        start_utc = start_localized.astimezone(pytz.UTC).replace(tzinfo=None)  # 轉換為 UTC 並移除時區
+
+        # 結束時間
+        end_naive = datetime.combine(date, time(hour=18, minute=0))
+        end_localized = local_tz.localize(end_naive)  # 加入時區資訊
+        end_utc = end_localized.astimezone(pytz.UTC).replace(tzinfo=None)  # 轉換為 UTC 並移除時區
+
+        return start_utc, end_utc
 
     @api.model
     def create(self, vals):

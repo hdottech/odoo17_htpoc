@@ -88,12 +88,23 @@ class EquipmentMaterialController(http.Controller):
             entry_date = post.get('entry_date')
             if not entry_date:
                 raise ValidationError(_("請選擇進場日期"))
+            # try:
+            #     # 如果 entry_date 本身已是帶時區的 datetime，則移除時區資訊
+            #     naive_date = datetime.strptime(entry_date, '%Y-%m-%d').strftime('%Y-%m-%d')
+
+            #     # 使用 DateUtils 設置時間範圍
+            #     start_time, end_time = DateUtils.set_time_range(naive_date)
+            #     _logger.info(f"時間轉換 - 開始: {start_time}, 結束: {end_time}")
+
             try:
-                start_time, end_time = DateUtils.set_time_range(entry_date)
-                _logger.info(f"時間轉換 - 開始: {start_time}, 結束: {end_time}")
+                # 將 entry_date 固定為當天的 08:00 和 18:00
+                planned_date_begin = datetime.strptime(entry_date, '%Y-%m-%d') + timedelta(hours=8)
+                planned_date_end = datetime.strptime(entry_date, '%Y-%m-%d') + timedelta(hours=18)
+
+                _logger.info(f"預設時間 - 開始: {planned_date_begin}, 結束: {planned_date_end}")
+
             except ValueError as e:
                 raise ValidationError(_(str(e)))
-
 
 
 
@@ -204,8 +215,8 @@ class EquipmentMaterialController(http.Controller):
                 'sub_contractor_id': int(post.get('sub_contractor')),
                 'main_contractor_id': int(post.get('main_contractor')),
                 'entry_date': entry_date,
-                'planned_date_begin': start_time,
-                'planned_date_end': end_time,
+                'planned_date_begin': planned_date_begin,
+                'planned_date_end': planned_date_end,
                 'entry_method': ','.join(entry_methods),
                 'contact_person': post.get('contact_person'),
                 'contact_phone': post.get('contact_phone'),
@@ -236,6 +247,8 @@ class EquipmentMaterialController(http.Controller):
             return request.render('approval_website.vendor_form_success', {
                 'approval_request': approval_request,
                 'request_number': approval_request.sequence_number,
+                'planned_date_begin':planned_date_begin,
+                'planned_date_end':  planned_date_end,
             })
 
         except ValidationError as e:
