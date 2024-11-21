@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 動作 -->
+    <record id="action_approval_pending" model="ir.actions.act_window">
+        <field name="name">待審核申請</field>
+        <field name="res_model">approval.request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('request_status', '=', 'pending')]</field>
+        <field name="groups_id" eval="[(4, ref('group_approval_manager'))]"/>
+    </record>
+
+    <!-- 菜單項 -->
+    <menuitem 
+        id="menu_approval_pending"
+        name="待審核申請"
+        action="action_approval_pending"
+        parent="menu_approval_root"
+        sequence="10"
+        groups="group_approval_manager"/>
+
+    <menuitem 
+        id="menu_approval_all"
+        name="所有申請"
+        action="action_approval_all"
+        parent="menu_approval_root"
+        sequence="20"
+        groups="group_approval_admin"/>
+</odoo>

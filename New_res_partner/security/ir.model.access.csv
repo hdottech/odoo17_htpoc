@@ -3,3 +3,4 @@ access_new_res_partner_company,access_new_res_partner_company,model_new_res_part
 access_new_res_partner_work_type,access_new_res_partner_work_type,model_new_res_partner_work_type,base.group_user,1,1,1,1
 access_new_res_partner_function,access_new_res_partner_function,model_new_res_partner_function,base.group_user,1,1,1,1
 access_no_entry_reason,access_no_entry_reason,model_no_entry_reason,base.group_user,1,1,1,1
+
