@@ -14,41 +14,56 @@
     <template id="print_partner_badge">
         <t t-call="web.basic_layout">
             <div class="page">
-                <div class="oe_structure"></div>
                 <t t-foreach="docs" t-as="partner">
                     <div class="col-md-6">
-                        <div class="oe_structure"></div>
-                        <table style="width:243pt; height:153pt; border: 1pt solid black; border-collapse:separate; border-radius:8pt; margin:5pt">
-                            <td style="width:33%;" valign="center">
-                                <table style="width:77pt; height:150pt" class="table-borderless">
-                                    <tr style="height:30%">
-                                        <td align="center" valign="center">
-                                            <span t-if="partner.company_id.logo">
-                                                <img t-att-src="image_data_uri(partner.company_id.logo)" style="max-height:45pt;max-width:90%" alt="Company Logo"/>
-                                            </span>
-                                        </td>
-                                    </tr>
-                                    <tr style="height:70%;">
-                                        <td align="center" valign="center">
-                                            <t t-if="partner.image_1920">
-                                                <img t-att-src="image_data_uri(partner.image_1920)" style="max-height:85pt;max-width:90%" alt="Partner Image"/>
-                                            </t>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                            <td style="width:67%" valign="center">
-                                <table style="width:155pt; height:85pt" class="table-borderless">
-                                    <tr><th><div style="font-size:15pt; margin-bottom:0pt;margin-top:0pt;" align="center"><span t-out="partner.name">Marc Demo</span></div></th></tr>
-                                    <tr><td><div align="center" style="font-size:10pt;margin-bottom:5pt;"><span t-out="partner.function">Software Developer</span></div></td></tr>
-                                    <tr><td><div t-if="partner.res_partner_barcode" t-field="partner.res_partner_barcode" t-options="{'widget': 'barcode', 'width': 600, 'height': 120, 'img_style': 'max-height:50pt;max-width:100%;', 'img_align': 'center'}">12345678901</div></td></tr>
-                                </table>
-                            </td>
+                        <table style="width:190pt; height:295pt; border: 1pt solid black; border-collapse:separate; border-radius:8pt; margin:1pt">
+                            <!-- Logo 區域 -->
+                            <tr style="height:25%">
+                                <td align="center" valign="center">
+                                    <span t-if="partner.company_id.logo">
+                                        <img t-att-src="image_data_uri(partner.company_id.logo)" 
+                                             style="max-height:50pt;max-width:90%; margin-top:5pt;"
+                                             alt="Company Logo"/>
+                                    </span>
+                                </td>
+                            </tr>
+                            <!-- 聯絡人照片 -->
+                            <tr style="height:40%;">
+                                <td align="center" valign="top">
+                                    <img t-att-src="image_data_uri(partner.image_1920)" 
+                                         style="max-height:110pt;max-width:100%; margin-top:0pt"
+                                         alt="Partner Image"/>
+                                </td>
+                            </tr>
+                            <!-- 聯絡人姓名和職稱 -->
+                            <tr style="height:15%">
+                                <td align="center">
+                                    <div style="font-size:14pt; margin-bottom:2pt;" align="center">
+                                        <span t-field="partner.name"/>
+                                    </div>
+                                    <div align="center" style="font-size:10pt;">
+                                        <span t-field="partner.function"/>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- 條碼 -->
+                            <tr style="height:30%">
+                                <td align="center" valign="bottom">
+                                    <div t-if="partner.res_partner_barcode" 
+                                         t-field="partner.res_partner_barcode" 
+                                         t-options="{
+                                             'widget': 'barcode', 
+                                             'type': 'Code128',
+                                             'width': 1600, 
+                                             'height': 300, 
+                                             'img_style': 'max-height:70pt; max-width:100%; width:100% !important;', 
+                                             'img_align': 'center'
+                                         }"/>
+                                </td>
+                            </tr>
                         </table>
-                        <div class="oe_structure"></div>
                     </div>
                 </t>
-                <div class="oe_structure"></div>
             </div>
         </t>
     </template> 
