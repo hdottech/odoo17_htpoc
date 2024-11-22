@@ -43,7 +43,7 @@ class SpecialWorkPermitController(http.Controller):
 
             # 獲取審批類型
             approval_category = request.env['approval.category'].sudo().search([
-                ('name', '=', '平行廠商：特殊作業作業許可單')
+                ('name', '=', '平行廠商：特殊作業許可單')
             ], limit=1)
             if not approval_category:
                 raise ValidationError(_("找不到對應的審批類型"))
