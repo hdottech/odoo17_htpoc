@@ -1,0 +1,25 @@
+<odoo>
+    <data> 
+        <template id="form_selection_template2" name="Form Selection2">
+            <t t-call="website.layout">
+                <div class="container mt-4">
+                    <h2 class="mb-4">請於下方點選所要申請之作業表單：</h2>
+                    <div class="row">
+                        <div class="col-12">
+                            <a href="/vendor_2" class="btn btn-primary mb-3 d-inline-block">平行廠商：一般作業申請表單(限七日)</a>
+                        </div>
+                        <div class="col-12">
+                            <a href="/safety_operation_2" class="btn btn-primary mb-3 d-inline-block">平行廠商：安全設施拆除作業申請表單</a>
+                        </div>
+                        <div class="col-12">
+                            <a href="/equipment_material_2" class="btn btn-primary mb-3 d-inline-block">平行廠商：機具物料進場申請表單</a>
+                        </div>
+                        <div class="col-12">
+                            <a href="/special_work_permit/form_2" class="btn btn-primary mb-3 d-inline-block">平行廠商：特殊作業作業許可單</a>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+    </data> 
+</odoo>

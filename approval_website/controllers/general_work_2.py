@@ -10,18 +10,18 @@ _logger = logging.getLogger(__name__)
 
 
 # 申請表菜單
-class FormSelectionController(http.Controller):
-    @http.route('/form_selection', type='http', auth='public', website=True)
+class FormSelectionController2(http.Controller):
+    @http.route('/form_selection_2', type='http', auth='public', website=True)
     def form_selection(self, **kw):
-        return request.render('approval_website.form_selection_template', {
+        return request.render('approval_website.form_selection_template2', {
         })
 class TestWebsiteController(http.Controller):
-    @http.route('/vendor', type='http', auth='public', website=True)
+    @http.route('/vendor_2', type='http', auth='public', website=True)
     def index(self, **kwargs):
         """顯示一般作業申請表單頁面"""
         values = kwargs.copy()
         approval_types = request.env['approval.type'].sudo().search([('active', '=', True)])
-        return request.render('approval_website.vendor_form_template123', {
+        return request.render('approval_website.vendor_form_template123_2', {
             'main_contractors': request.env['new.res.partner.company'].sudo().search([]),
             'sub_contractors': request.env['new.res.partner.company'].sudo().search([]),
             'approval_types': approval_types,
@@ -29,7 +29,7 @@ class TestWebsiteController(http.Controller):
             'values': values
         })
 
-    @http.route('/vendor/submit', type='http', auth='public', website=True, methods=['POST'])
+    @http.route('/vendor_2/submit', type='http', auth='public', website=True, methods=['POST'])
     def vendor_submit(self, **post):
         try:
             _logger.info("開始處理一般作業申請表單提交")
@@ -41,7 +41,7 @@ class TestWebsiteController(http.Controller):
                 raise ValidationError(_("請選擇有效的審批主題"))
 
             approval_category = request.env['approval.category'].sudo().search([
-                ('name', '=', '一般作業申請表單(限七日)')
+                ('name', '=', '平行廠商：一般作業申請表單(限七日)')
             ], limit=1)
 
             # 獲取主承商和次承商資訊
@@ -112,7 +112,7 @@ class TestWebsiteController(http.Controller):
 
         except Exception as e:
             _logger.error(f"提交表單時發生錯誤: {str(e)}", exc_info=True)
-            return request.render('approval_website.vendor_form_template123', {
+            return request.render('approval_website.vendor_form_template123_2', {
                 'error': str(e),
                 'main_contractors': request.env['new.res.partner.company'].sudo().search([]),
                 'sub_contractors': request.env['new.res.partner.company'].sudo().search([]),

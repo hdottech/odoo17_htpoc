@@ -1,0 +1,401 @@
+<odoo>
+    <data>  
+        <template id="equipment_material_entry_form2" name="Equipment Material Entry Form2">
+            <t t-call="website.layout">
+                <div class="container">
+                    <div id="wrap" class="oe_structure oe_empty">
+                        <section class="s_text_block pt40 pb0 o_colored_level" data-snippet="s_text_block" data-name="標題">
+                            <div class="container">
+                                <h2 style="text-align:center;"><strong>機具物料進場申請表單</strong></h2>
+                            </div>
+                        </section>
+                    
+                        
+                        <form id="equipment_material_form2" action="/equipment_material_2/submit" method="post" class="o_mark_required" data-mark="*">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            
+                            <!-- 選擇案場類型 -->
+                            <div class="form-group col-12 s_website_form_field mb-4">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="approval_type_id">
+                                        <span class="s_website_form_label_content">選擇案場</span>
+                                        <span class="s_website_form_mark">*</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <select class="form-control s_website_form_input" id="approval_type_id" name="approval_type_id" required="required">
+                                            <option value="">請選擇審批案場</option>
+                                            <t t-foreach="approval_types" t-as="type">
+                                                <option t-att-value="type.id" t-att-selected="type.id == int(values.get('approval_type_id', '0'))">
+                                                    <t t-esc="type.name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 電郵地址 -->
+                            <div class="form-group col-12 s_website_form_field mb-4">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px">
+                                        <span class="s_website_form_label_content">你的電郵地址</span>
+                                        <span class="s_website_form_mark">*</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <input type="email" class="form-control s_website_form_input" name="email" required="required"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 主承攬商 -->
+                            <div class="form-group col-12 s_website_form_field mb-4">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="main_contractor">
+                                        <span class="s_website_form_label_content">主承攬商</span>
+                                        <span class="s_website_form_mark">*</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <select class="form-control s_website_form_input" id="main_contractor" name="main_contractor" required="required">
+                                            <option value="" disabled="disabled" selected="selected">請選擇主承攬商</option>
+                                            <t t-foreach="main_contractors" t-as="contractor">
+                                                <option t-att-value="contractor.id" t-att-selected="contractor.id == int(values.get('main_contractor', '0'))">
+                                                    <t t-esc="contractor.name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 次承攬商字段 -->
+                            <div class="form-group col-12 s_website_form_field mb-4">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="sub_contractor">
+                                        <span class="s_website_form_label_content">次承攬商</span>
+                                        <span class="s_website_form_mark">*</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <select class="form-control s_website_form_input" id="sub_contractor" name="sub_contractor" required="required">
+                                            <option value="" disabled="disabled" selected="selected">請選擇次承攬商</option>
+                                            <t t-foreach="sub_contractors" t-as="contractor">
+                                                <option t-att-value="contractor.id" t-att-selected="contractor.id == int(values.get('sub_contractor', '0'))">
+                                                    <t t-esc="contractor.name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 進廠日期 -->
+                            <div class="form-group col-12 s_website_form_field mb-4">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="entry_date">
+                                        <span class="s_website_form_label_content">進廠日期</span>
+                                        <span class="s_website_form_mark">*</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <input type="date" class="form-control s_website_form_input" 
+                                            id="entry_date" 
+                                            name="entry_date" 
+                                            required="required" 
+                                            t-att-value="values.get('entry_date', '')"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 進場方式 -->
+                            <div class="form-group col-12 s_website_form_field mb-4">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px">
+                                        <span class="s_website_form_label_content">進場方式</span>
+                                        <span class="s_website_form_mark">*</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <t t-set="entry_methods" t-value="request.httprequest.form.getlist('entry_method') if request and request.httprequest else []"/>
+                                        <div class="form-check">
+                                            <input type="checkbox" class="form-check-input entry-method-checkbox" 
+                                                id="truck_check" name="entry_method" value="貨車"
+                                                t-att-checked="'貨車' in entry_methods"
+                                                onclick="toggleAdditionalFields()"/>
+                                            <label class="form-check-label" for="truck_check">貨車</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input entry-method-checkbox" type="checkbox" 
+                                                id="handcarry_check" name="entry_method" value="人力搬運"
+                                                t-att-checked="'人力搬運' in entry_methods"
+                                                onclick="toggleAdditionalFields()"/>
+                                            <label class="form-check-label" for="handcarry_check">人力搬運</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input entry-method-checkbox" type="checkbox" 
+                                                id="forklift_check" name="entry_method" value="堆高機"
+                                                t-att-checked="'堆高機' in entry_methods"
+                                                onclick="toggleAdditionalFields()"/>
+                                            <label class="form-check-label" for="forklift_check">堆高機</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input entry-method-checkbox" type="checkbox" 
+                                                id="crane_check" name="entry_method" value="吊掛"
+                                                t-att-checked="'吊掛' in entry_methods"
+                                                onclick="toggleAdditionalFields()"/>
+                                            <label class="form-check-label" for="crane_check">吊掛</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input entry-method-checkbox" type="checkbox" 
+                                                id="other_check" name="entry_method" value="其他"
+                                                t-att-checked="'其他' in entry_methods"
+                                                onclick="toggleAdditionalFields()"/>
+                                            <label class="form-check-label" for="other_check">其他</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 貨車車號欄位 -->
+                            <div class="form-group col-12 s_website_form_field mb-4" id="truck_details_div" t-att-style="'display: %s;' % ('block' if '貨車' in entry_methods else 'none')">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px">
+                                        <span class="s_website_form_label_content">貨車車號</span>
+                                        <span class="s_website_form_mark">*</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <input type="text" class="form-control s_website_form_input" 
+                                            name="truck_details" id="truck_number"
+                                            t-att-value="request.params.get('truck_details', '')"
+                                            t-att-required="'貨車' in entry_methods"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 修改堆高機工區合格標籤的部分 -->
+                            <div class="form-group col-12 s_website_form_field mb-4" id="forklift_qualified_div" style="display: none;">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px">
+                                        <span class="s_website_form_label_content">堆高機工區合格標籤</span>
+                                        <span class="s_website_form_mark">*</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <div class="btn-group" role="group">
+                                            <input type="radio" class="btn-check" name="forklift_qualified" id="forklift_qualified_yes" value="yes" autocomplete="off" t-att-checked="request.params.get('forklift_qualified') == 'yes'"/>
+                                            <label class="btn btn-outline-primary" for="forklift_qualified_yes">有</label>
+
+                                            <input type="radio" class="btn-check" name="forklift_qualified" id="forklift_qualified_no" value="no" autocomplete="off" t-att-checked="request.params.get('forklift_qualified') == 'no'"/>
+                                            <label class="btn btn-outline-primary" for="forklift_qualified_no">無</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 吊掛資訊 -->
+                            <div id="crane_details_div" style="display: none;">
+                                <!-- 吊掛型號 -->
+                                <div class="form-group col-12 s_website_form_field mb-4">
+                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+                                        <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px">
+                                            <span class="s_website_form_label_content">吊掛型號</span>
+                                            <span class="s_website_form_mark">*</span>
+                                        </label>
+                                        <div class="col-sm">
+                                            <input type="text" class="form-control s_website_form_input" 
+                                                name="crane_model" id="crane_model"
+                                                t-att-value="request.params.get('crane_model', '')"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- 吊掛噸數 -->
+                                <div class="form-group col-12 s_website_form_field mb-4">
+                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+                                        <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px">
+                                            <span class="s_website_form_label_content">吊掛噸數</span>
+                                            <span class="s_website_form_mark">*</span>
+                                        </label>
+                                        <div class="col-sm">
+                                            <input type="number" step="0.1" class="form-control s_website_form_input" 
+                                                name="crane_tonnage" id="crane_tonnage"
+                                                t-att-value="request.params.get('crane_tonnage', '')"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 其他型號資訊 -->
+                            <div id="other_details_div" style="display: none;">
+                                <!-- 其他型號-1 -->
+                                <div class="form-group col-12 s_website_form_field mb-4">
+                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+                                        <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px">
+                                            <span class="s_website_form_label_content">其他型號-1</span>
+                                            <span class="s_website_form_mark">*</span>
+                                        </label>
+                                        <div class="col-sm">
+                                            <input type="text" class="form-control s_website_form_input" 
+                                                name="other_model_1" id="other_model_1"
+                                                t-att-value="request.params.get('other_model_1', '')"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- 其他型號-2 -->
+                                <div class="form-group col-12 s_website_form_field mb-4">
+                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+                                        <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px">
+                                            <span class="s_website_form_label_content">其他型號-2</span>
+                                            <span class="s_website_form_mark">*</span>
+                                        </label>
+                                        <div class="col-sm">
+                                            <input type="text" class="form-control s_website_form_input" 
+                                                name="other_model_2" id="other_model_2"
+                                                t-att-value="request.params.get('other_model_2', '')"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 動態欄位 -->
+                            <div id="additional_fields" style="display: none;">
+                                <!-- 動態欄位將通過 JavaScript 添加 -->
+                            </div>
+
+                            <!-- 攜貨人/聯絡人 姓名 -->
+                            <div class="form-group col-12 s_website_form_field mb-4">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="contact_person">
+                                        <span class="s_website_form_label_content">攜貨人/聯絡人 姓名</span>
+                                        <span class="s_website_form_mark">*</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <input type="text" class="form-control s_website_form_input" name="contact_person" required="required" id="contact_person" t-att-value="values.get('contact_person', '')"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 攜貨人/聯絡人 電話 -->
+                            <div class="form-group col-12 s_website_form_field mb-4">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="contact_phone">
+                                        <span class="s_website_form_label_content">攜貨人/聯絡人 電話</span>
+                                        <span class="s_website_form_mark">*</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <input type="tel" class="form-control s_website_form_input" name="contact_phone" required="required" id="contact_phone" t-att-value="values.get('contact_phone', '+886')"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 物品/數量/單一物品重量 -->
+                            <div class="form-group col-12 s_website_form_field mb-4">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="item_details">
+                                        <span class="s_website_form_label_content">物品/數量/單一物品重量</span>
+                                        <span class="s_website_form_mark">*</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <textarea class="form-control s_website_form_input" name="item_details" required="required" id="item_details" rows="3" t-att-value="values.get('item_details', '')"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 提交按鈕 -->
+                            <div class="form-group col-12 s_website_form_submit mb-4">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <div class="col-sm-auto" style="width: 200px"></div>
+                                    <div class="col-sm">
+                                        <button type="submit" id="submit-btn" class="btn btn-primary">提交表單</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+
+                    <div class="mt-4">
+                        <h5>其他注意事項：</h5>
+                        <ol>
+                            <li>送貨車輛進場卸貨完畢，需刷卡請離開，勿久留。</li>
+                            <li>物料進場前，須至安委會填寫碼頭和客貨梯紙本登記(每周二收工會議召開動線會議)。</li>
+                            <li>車輛倒車時，須派交管人員(配戴交管棒)進行指揮及圈圍管制、停放時使用制式輪擋。</li>
+                            <li>貨物卸貨需使用搬運工具或推車等，物料擺放應將重心置放於下方(4:1防傾倒原則)，避免物料倒塌。</li>
+                            <li>碼頭區不可攀爬碼頭及車輛，一律使用上下設備。</li>
+                            <li>貨車升降尾門作動時，人員不可站立於上方及影響範圍內。</li>
+                            <li>室內僅限電力驅動搬運工具，柴油形式禁止入內。</li>
+                            <li>進場物品超過可書寫數量，請另外申請物料進廠單。</li>
+                        </ol>
+                    </div>
+                </div>
+                <!-- 加入 JavaScript -->
+                <script type="text/javascript">
+                    function toggleAdditionalFields() {
+                        // 獲取所有checkbox
+                        var truckCheck = document.getElementById('truck_check');
+                        var forkliftCheck = document.getElementById('forklift_check');
+                        var craneCheck = document.getElementById('crane_check');
+                        var otherCheck = document.getElementById('other_check');
+
+                        // 獲取所有額外欄位區域
+                        var truckDetailsDiv = document.getElementById('truck_details_div');
+                        var forkliftQualifiedDiv = document.getElementById('forklift_qualified_div');
+                        var craneDetailsDiv = document.getElementById('crane_details_div');
+                        var otherDetailsDiv = document.getElementById('other_details_div');
+
+                        // 控制貨車欄位
+                        truckDetailsDiv.style.display = truckCheck.checked ? 'block' : 'none';
+                        var truckNumber = document.getElementById('truck_number');
+                        if (truckNumber) {
+                            truckNumber.required = truckCheck.checked;
+                        }
+
+                        // 堆高機欄位顯示控制（移除驗證限制）
+                        if (forkliftCheck.checked) {
+                            forkliftQualifiedDiv.style.display = 'block';
+                        } else {
+                            forkliftQualifiedDiv.style.display = 'none';
+                        }
+
+                        // 控制吊掛欄位
+                        craneDetailsDiv.style.display = craneCheck.checked ? 'block' : 'none';
+                        var craneModel = document.getElementById('crane_model');
+                        var craneTonnage = document.getElementById('crane_tonnage');
+                        if (craneModel) {
+                            craneModel.required = craneCheck.checked;
+                        }
+                        if (craneTonnage) {
+                            craneTonnage.required = craneCheck.checked;
+                        }
+
+                        // 控制其他欄位
+                        otherDetailsDiv.style.display = otherCheck.checked ? 'block' : 'none';
+                        var otherModel1 = document.getElementById('other_model_1');
+                        var otherModel2 = document.getElementById('other_model_2');
+                        if (otherModel1) {
+                            otherModel1.required = otherCheck.checked;
+                        }
+                        if (otherModel2) {
+                            otherModel2.required = otherCheck.checked;
+                        }
+                    }
+
+                    // 表單提交驗證
+                    document.getElementById('equipment_material_form').onsubmit = function(e) {
+                        // 檢查是否有選擇進場方式
+                        var entryMethods = document.querySelectorAll('input[name="entry_method"]:checked');
+                        if (entryMethods.length === 0) {
+                            alert('請至少選擇一種進場方式');
+                            e.preventDefault();
+                            return false;
+                        }
+                        return true;
+                    };
+
+                    // 頁面加載時初始化
+                    document.addEventListener('DOMContentLoaded', function() {
+                        toggleAdditionalFields();
+                        
+                        // 為所有進場方式的 checkbox 添加事件監聽
+                        var checkboxes = document.querySelectorAll('.entry-method-checkbox');
+                        checkboxes.forEach(function(checkbox) {
+                            checkbox.addEventListener('change', toggleAdditionalFields);
+                        });
+                    });
+                </script>
+
+                
+            </div>
+        </t>
+        </template>
+    </data>
+</odoo>

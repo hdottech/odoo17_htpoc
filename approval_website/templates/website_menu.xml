@@ -2,12 +2,17 @@
 <odoo>
     <data>
         <record id="menu_form_selection" model="website.menu">
-            <field name="name">表單填寫</field>
+            <field name="name">一般廠商表單</field>
             <field name="url">/form_selection</field>
             <field name="parent_id" ref="website.main_menu"/>
             <field name="sequence">55</field>
         </record>
-
+        <record id="menu_form_selection_2" model="website.menu">
+            <field name="name">平行廠商表單</field>
+            <field name="url">/form_selection_2</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence">51</field>
+        </record>
         <record id="menu_website_approvals" model="website.menu">
             <field name="name">審批申請列表</field>
             <field name="url">/approvals</field>

@@ -101,23 +101,6 @@ class ApprovalRequest(models.Model):
             approver = approval.approver_ids.filtered(lambda a: a.user_id == self.env.user)
             approval.user_status = approver[0].status if approver else False
 
-    @api.depends('approver_ids.user_id', 'approver_ids.status')
-    def _compute_request_status(self):
-        for approval in self:
-            status_lst = approval.mapped('approver_ids.status')
-            minimal_approver = approval.approval_minimum if len(approval.approver_ids) >= approval.approval_minimum else len(approval.approver_ids)
-            if status_lst:
-                if status_lst.count('approved') >= minimal_approver:
-                    approval.request_status = 'approved'
-                elif status_lst.count('refused'):
-                    approval.request_status = 'refused'
-                elif status_lst.count('cancel'):
-                    approval.request_status = 'cancel'
-                else:
-                    approval.request_status = 'pending'
-            else:
-                approval.request_status = 'new'
-
     @api.onchange('category_id')
     def _onchange_category_id(self):
         for record in self:
