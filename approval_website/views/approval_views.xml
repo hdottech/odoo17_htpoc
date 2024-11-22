@@ -1,28 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- 動作 -->
-    <record id="action_approval_pending" model="ir.actions.act_window">
-        <field name="name">待審核申請</field>
+    <!-- Approvals to Review (待審核的請求) -->
+    <record id="approval_request_action_to_review" model="ir.actions.act_window">
+        <field name="name">Approvals to Review</field>
         <field name="res_model">approval.request</field>
-        <field name="view_mode">tree,form</field>
-        <field name="domain">[('request_status', '=', 'pending')]</field>
-        <field name="groups_id" eval="[(4, ref('group_approval_manager'))]"/>
+        <field name="view_mode">tree,form,kanban</field>
+        <field name="domain">[('approver_ids.user_id', '=', uid), ('request_status', '=', 'pending')]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No new approvals to review.
+            </p>
+        </field>
     </record>
 
-    <!-- 菜單項 -->
-    <menuitem 
-        id="menu_approval_pending"
-        name="待審核申請"
-        action="action_approval_pending"
-        parent="menu_approval_root"
-        sequence="10"
-        groups="group_approval_manager"/>
-
-    <menuitem 
-        id="menu_approval_all"
-        name="所有申請"
-        action="action_approval_all"
-        parent="menu_approval_root"
-        sequence="20"
-        groups="group_approval_admin"/>
+    <!-- Approved Requests (已審核的請求) -->
+    <record id="approval_request_action_approved" model="ir.actions.act_window">
+        <field name="name">Approved Requests</field>
+        <field name="res_model">approval.request</field>
+        <field name="view_mode">tree,form,kanban</field>
+        <field name="domain">[('approver_ids.user_id', '=', uid), ('request_status', '=', 'approved')]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No approvals that have been reviewed yet.
+            </p>
+        </field>
+    </record>
+    <record id="approval_request_action_all" model="ir.actions.act_window">
+        <field name="name">Approved Requests</field>
+        <field name="res_model">approval.request</field>
+        <field name="view_mode">tree,form,kanban</field>
+        <field name="domain">[('request_status', '=', 'approved')]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No approvals that have been reviewed yet.
+            </p>
+        </field>
+    </record>
 </odoo>

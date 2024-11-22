@@ -26,6 +26,8 @@
     ],
     
     'data': [
+        # 'security/approval_security.xml',
+        # 'views/approval_views.xml',
         'security/ir.model.access.csv',
         'security/securityrules.xml',
         # 'data/sequence.xml',
@@ -43,6 +45,9 @@
         'templates/error.xml',
         'views/approval_request.xml',
         'views/approval_type.xml',
+        'views/approval_approver.xml',
+
+
         # 'views/res_users_views.xml',
     ],
 

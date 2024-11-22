@@ -3,10 +3,9 @@ from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 from datetime import date
 from ..utils.date_utils import DateUtils
+from lxml import etree
 
 class ApprovalRequest(models.Model):
-    # _name = 'approval.request'
-    # _inherit =  ['approval.request', 'mail.thread', 'mail.activity.mixin']
     _inherit ='approval.request'
 
     # 新增序號欄位
@@ -166,6 +165,15 @@ class ApprovalRequest(models.Model):
             )
 
     can_access = fields.Boolean(compute='_compute_can_access')
+    @api.model
+    def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
+        res = super(ApprovalRequest, self).fields_view_get(view_id=view_id, view_type=view_type, toolbar=toolbar, submenu=submenu)
+        if self.env.user.has_group('your_module.group_approval_manager'):
+            doc = etree.XML(res['arch'])
+            for node in doc.xpath("//button[@name='action_approve']"):
+                node.set('modifiers', '{"invisible": true}')
+            res['arch'] = etree.tostring(doc, encoding='unicode')
+        return res
 
 class ApprovalRequestRefuseHistory(models.Model):
     _name = 'approval.request.refuse.history'
