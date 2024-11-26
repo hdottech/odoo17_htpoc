@@ -44,7 +44,6 @@ class TaskReturnWizard(models.TransientModel):
         # 創建備註記錄退回原因
         self.task_id.message_post(
             body=_(
-                # '任務已從 <b>%s</b> 退回<br/>'
                 '任務已從 %s 退回，'
                 '退回原因：%s'
             ) % (

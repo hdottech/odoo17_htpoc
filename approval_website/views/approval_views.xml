@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Approvals to Review (待審核的請求) -->
+        <!-- 原有的 Actions -->
     <record id="approval_request_action_to_review" model="ir.actions.act_window">
         <field name="name">Approvals to Review</field>
         <field name="res_model">approval.request</field>
@@ -13,7 +13,6 @@
         </field>
     </record>
 
-    <!-- Approved Requests (已審核的請求) -->
     <record id="approval_request_action_approved" model="ir.actions.act_window">
         <field name="name">Approved Requests</field>
         <field name="res_model">approval.request</field>
@@ -25,6 +24,7 @@
             </p>
         </field>
     </record>
+
     <record id="approval_request_action_all" model="ir.actions.act_window">
         <field name="name">Approved Requests</field>
         <field name="res_model">approval.request</field>

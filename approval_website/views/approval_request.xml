@@ -72,5 +72,46 @@
                 </notebook>
             </field>
         </record>
+        <!-- 修改表單視圖以顯示審批順序 -->
+        <record id="view_approval_request_form_sequence" model="ir.ui.view">
+            <field name="name">approval.request.form.sequence</field>
+            <field name="model">approval.request</field>
+            <field name="inherit_id" ref="approvals.approval_request_view_form"/>
+            <field name="arch" type="xml">
+                <!-- 設定整個 approver_ids 可編輯 -->
+                <xpath expr="//field[@name='approver_ids']" position="attributes">
+                    <attribute name="readonly">0</attribute>
+                </xpath>
+                
+                <!-- 添加拖曳把手 -->
+                <xpath expr="//field[@name='approver_ids']/tree/field[@name='user_id']" position="before">
+                    <field name="sequence" widget="handle"/>
+                </xpath>
+                
+                <!-- 設定 user_id 欄位可編輯 -->
+                <xpath expr="//field[@name='approver_ids']/tree/field[@name='user_id']" position="attributes">
+                    <attribute name="readonly">0</attribute>
+                    <attribute name="force_save">1</attribute>
+                    <attribute name="options">{'no_create': True}</attribute>
+                    <attribute name="domain">[]</attribute>
+                </xpath>
+                
+                <!-- 設定 required 欄位可編輯 -->
+                <xpath expr="//field[@name='approver_ids']/tree/field[@name='required']" position="attributes">
+                    <attribute name="readonly">0</attribute>
+                    <attribute name="force_save">1</attribute>
+                </xpath>
+            </field>
+        </record>
+        <record id="view_approval_request_form_inherit" model="ir.ui.view">
+            <field name="name">approval.request.form.inherit</field>
+            <field name="model">approval.request</field>
+            <field name="inherit_id" ref="approvals.approval_request_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='approver_ids']" position="attributes">
+                    <attribute name="delete">can_delete</attribute>
+                </xpath>
+            </field>
+        </record>
     </data>
 </odoo>
