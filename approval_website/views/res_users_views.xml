@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- 修改使用者表單視圖 -->
+        <record id="view_users_form_inherit_vendor_type" model="ir.ui.view">
+            <field name="name">res.users.form.inherit.vendor.type</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='access_rights']" position="inside">
+                    <group string="廠商種類" >
+                        <!-- 隱藏欄位 -->
+                        <field name="is_parallel_vendor"/>
+                        <!-- <field name="vendor_type" widget="radio" options="{'horizontal': true}"/> -->
+                        <!-- <button name="action_set_parallel_vendor" 
+                                string="設定平行廠商" 
+                                type="object" 
+                                class="btn-primary"
+                                /> -->
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- 平行廠商設定精靈表單 -->
+        <!-- <record id="view_parallel_vendor_wizard_form" model="ir.ui.view">
+            <field name="name">parallel.vendor.wizard.form</field>
+            <field name="model">parallel.vendor.wizard</field>
+            <field name="arch" type="xml">
+                <form string="設定平行廠商">
+                    <group>
+                        <field name="user_id" readonly="1"/>
+                        <field name="confirm"/>
+                    </group>
+                    <footer>
+                        <button name="action_confirm" 
+                                string="確認" 
+                                type="object" 
+                                class="btn-primary"
+                                invisible="not confirm"/>
+                        <button special="cancel" string="取消" class="btn-secondary"/>
+                    </footer>
+                </form>
+            </field>
+        </record> -->
+    </data>
+</odoo>

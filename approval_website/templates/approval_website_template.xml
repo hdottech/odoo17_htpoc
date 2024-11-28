@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="approval_website_template" name="Approval Website Template">
+            <t t-call="website.layout">
+                <div class="container mt-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h2>
+                            審批類型列表
+                            <small class="text-muted">
+                                (共 <t t-esc="len(categories)"/> 種類型)
+                            </small>
+                        </h2>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>類型名稱</th>
+                                            <t t-if="is_manager">
+                                                <th>總請求數</th>
+                                            </t>
+                                            <th>我的請求</th>
+                                            <th>待審批</th>
+                                            <th>已審批</th>
+                                            <th>申請退回</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="categories" t-as="category">
+                                            <tr>
+                                                <td>
+                                                    <a t-attf-href="/approval/#{category.id}">
+                                                        <t t-esc="category.name"/>
+                                                    </a>
+                                                </td>
+                                                <t t-if="is_manager">
+                                                    <td>
+                                                        <t t-esc="request.env['approval.request'].search_count([('category_id', '=', category.id)])"/>
+                                                    </td>
+                                                </t>
+                                                <td>
+                                                    <t t-esc="request.env['approval.request'].search_count([
+                                                        ('category_id', '=', category.id),
+                                                        '|',
+                                                        ('request_owner_id', '=', current_user.id),
+                                                        ('create_uid', '=', current_user.id)
+                                                    ])"/>
+                                                </td>
+                                                <td>
+                                                    <t t-set="pending_count" t-value="request.env['approval.request'].search_count([
+                                                        ('category_id', '=', category.id),
+                                                        ('request_status', '=', 'pending')
+                                                    ])" />
+                                                    <span t-if="pending_count > 0" class="badge bg-warning">
+                                                        <t t-esc="pending_count"/>
+                                                    </span>
+                                                    <t t-else="">0</t>
+                                                </td>
+                                                <td>
+                                                    <t t-set="approved_count" t-value="request.env['approval.request'].search_count([
+                                                        ('category_id', '=', category.id),
+                                                        ('request_status', '=', 'approved')
+                                                    ])" />
+                                                    <span t-if="approved_count > 0" class="badge bg-success">
+                                                        <t t-esc="approved_count"/>
+                                                    </span>
+                                                    <t t-else="">0</t>
+                                                </td>
+                                                <td>
+                                                    <t t-set="refused_count" t-value="request.env['approval.request'].search_count([
+                                                        ('category_id', '=', category.id),
+                                                        ('request_status', '=', 'refused')
+                                                    ])" />
+                                                    <span t-if="refused_count > 0" class="badge bg-danger">
+                                                        <t t-esc="refused_count"/>
+                                                    </span>
+                                                    <t t-else="">0</t>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+    </data>
+</odoo>

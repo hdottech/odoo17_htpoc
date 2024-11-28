@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="safety_form_template_2" name="Safety Form">
+            <t t-call="website.layout">
+                <div class="container">
+                    <div id="wrap" class="oe_structure oe_empty">
+                        <section class="s_text_block pt40 pb0 o_colored_level" data-snippet="s_text_block" data-name="標題">
+                            <div class="container">
+                                <h2 style="text-align:center;"><strong>平行廠商:安全設施拆除作業申請表單</strong></h2>
+                            </div>
+                        </section>                       
+                        <form id="safety_operation_form2" action="/safety_operation_2/submit" method="post" class="o_mark_required" data-mark="*" enctype="multipart/form-data">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                            <!-- 選擇案場 -->
+                            <div class="form-group col-12 s_website_form_field mb-4">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="approval_type_id">
+                                        <span class="s_website_form_label_content">選擇案場</span>
+                                        <span class="s_website_form_mark">*</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <select class="form-control s_website_form_input" id="approval_type_id" name="approval_type_id" required="required">
+                                            <option value="">請選擇審批案場</option>
+                                            <t t-foreach="approval_types" t-as="type">
+                                                <option t-att-value="type.id" t-att-selected="type.id == int(values.get('approval_type_id', '0'))">
+                                                    <t t-esc="type.name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 施工日期 -->
+                            <div class="form-group col-12 s_website_form_field mb-4">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="construction_date">
+                                        <span class="s_website_form_label_content">施工日期</span>
+                                        <span class="s_website_form_mark">*</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <input type="date" 
+                                            class="form-control s_website_form_input" 
+                                            id="construction_date" 
+                                            name="construction_date" 
+                                            t-att-min="min_date"
+                                            t-att-max="max_date"
+                                            required="required"/>
+                                            <small class="form-text text-muted">
+                                                施工時間：08:00-18:00（申請期限以一天為限）
+                                            </small>
+                                            <div class="alert alert-warning mt-2" role="alert">
+                                                <i class="fa fa-exclamation-triangle"></i> 
+                                                施工日期必須在未來七天內，超過七天將無法送出申請。
+                                            </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 主承商 -->
+                            <div class="form-group col-12 s_website_form_field mb-4">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="main_contractor">
+                                        <span class="s_website_form_label_content">主承商</span>
+                                        <span class="s_website_form_mark">*</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <select class="form-control s_website_form_input" id="main_contractor" name="main_contractor" required="required">
+                                            <option value="" disabled="disabled" selected="selected">請選擇主承商</option>
+                                            <t t-foreach="main_contractors" t-as="contractor">
+                                                <option t-att-value="contractor.id" t-att-selected="contractor.id == int(values.get('main_contractor', '0'))">
+                                                    <t t-esc="contractor.name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 次承商 -->
+                            <div class="form-group col-12 s_website_form_field mb-4">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="sub_contractor">
+                                        <span class="s_website_form_label_content">次承商</span>
+                                        <span class="s_website_form_mark">*</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <select class="form-control s_website_form_input" id="sub_contractor" name="sub_contractor" required="required">
+                                            <option value="" disabled="disabled" selected="selected">請選擇次承商</option>
+                                            <t t-foreach="sub_contractors" t-as="contractor">
+                                                <option t-att-value="contractor.id" t-att-selected="contractor.id == int(values.get('sub_contractor', '0'))">
+                                                    <t t-esc="contractor.name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 申請人信箱 -->
+                            <div class="form-group col-12 s_website_form_field mb-4">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="email">
+                                        <span class="s_website_form_label_content">申請人信箱</span>
+                                        <span class="s_website_form_mark">*</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <input type="email" class="form-control s_website_form_input" name="email" required="required" id="email"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 拆除項目 -->
+                            <div class="form-group col-12 s_website_form_field mb-4">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="removal_items">
+                                        <span class="s_website_form_label_content">拆除項目</span>
+                                        <span class="s_website_form_mark">*</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <textarea class="form-control s_website_form_input" name="removal_items" required="required" id="removal_items" rows="3"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 樓別/樓層/住位 -->
+                            <div class="form-group col-12 s_website_form_field mb-4">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="location">
+                                        <span class="s_website_form_label_content">樓別/樓層/住位</span>
+                                        <span class="s_website_form_mark">*</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <input type="text" class="form-control s_website_form_input" name="location" required="required" id="location"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 拆除原因 -->
+                            <div class="form-group col-12 s_website_form_field mb-4">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="removal_reason">
+                                        <span class="s_website_form_label_content">拆除原因</span>
+                                        <span class="s_website_form_mark">*</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <textarea class="form-control s_website_form_input" name="removal_reason" required="required" id="removal_reason" rows="3"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 替代防護措施 -->
+                            <div class="form-group col-12 s_website_form_field mb-4">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="alternative_measures">
+                                        <span class="s_website_form_label_content">替代防護措施</span>
+                                        <span class="s_website_form_mark">*</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <textarea class="form-control s_website_form_input" name="alternative_measures" required="required" id="alternative_measures" rows="3"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 檔案上傳 -->
+                            <div class="form-group col-12 s_website_form_field mb-4">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="attachment">
+                                        <span class="s_website_form_label_content">附件上傳</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <input type="file" class="form-control-file s_website_form_input" 
+                                               name="attachment[]" id="attachment" multiple="multiple"
+                                               accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg"/>
+                                        <small class="form-text text-muted">
+                                            檔案大小限制：每個檔案不超過50MB<br/>
+                                            可上傳數量：最多10個檔案
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 提交按鈕 -->
+                            <div class="form-group col-12 s_website_form_submit mb-4">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <div class="col-sm-auto" style="width: 200px"></div>
+                                    <div class="col-sm">
+                                        <button type="submit" id="submit-btn" class="btn btn-primary">提交</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 注意事項 -->
+                            <div class="form-group col-12 mt-4">
+                                <div class="alert alert-info" role="alert">
+                                    <h5 class="alert-heading">注意事項：</h5>
+                                    <ol>
+                                        <li><strong>*申請簽核流程：承商工安>主承商工程師->UIS EHS</strong></li>
+                                        <li>未申請安全設施拆除，擅自拆除安全設施，以刑事處理分。</li>
+                                        <li>拆除高架地板除原責任清潔工程師外，內裝清潔工程師需一併簽核方可生效。</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </t>
+        </template>
+    </data>
+</odoo>

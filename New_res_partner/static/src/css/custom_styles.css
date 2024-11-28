@@ -5,3 +5,12 @@
     max-height: 70px;
     margin-right: 300px;
 }
+
+.btn-close{
+    display:none;
+}
+
+.col-md-6 {
+    flex: 0 0 auto;
+    width: 50%;
+  }

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="document_kanban_view_inherit" model="ir.ui.view">
+            <field name="name">documents.document.kanban.inherit</field>
+            <field name="model">documents.document</field>
+            <field name="inherit_id" ref="documents.document_view_kanban"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[hasclass('o_kanban_record_body')]" position="inside">
+                    <div t-if="record.task_number.raw_value" class="text-muted small mt-1">
+                        <strong>任務編號:</strong>
+                        <field name="task_number"/>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

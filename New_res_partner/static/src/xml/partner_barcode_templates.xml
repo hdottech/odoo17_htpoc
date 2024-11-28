@@ -1,0 +1,29 @@
+<templates>
+   <t t-name="barcode_capturing_partner.partner_scanner" t-inherit="web.FormView">
+       <xpath expr="//t[@t-set-slot='layout-actions']" position="inside">
+          <button class="btn btn-primary d-flex align-items-center" t-on-click="PartnerBarcodeDialog">
+                <i class="fa fa-barcode" style="font-size:24px; margin-right: 8px; color: white;"> </i>
+                <span>Scan Partner</span>
+          </button>
+       </xpath>
+   </t>
+   <!-- List View Template -->
+    <t t-name="barcode_capturing_partner.list_scanner" t-inherit="web.ListView">
+        <xpath expr="//t[@t-set-slot='layout-actions']" position="inside">
+            <button class="btn btn-primary d-flex align-items-center" t-on-click="PartnerBarcodeDialog">
+                <i class="fa fa-barcode" style="font-size:24px; margin-right: 8px; color: white;"> </i>
+                <span>Scan Partner</span>
+            </button>
+        </xpath>
+    </t>
+
+    <!-- Kanban View Template -->
+    <t t-name="barcode_capturing_partner.kanban_scanner" t-inherit="web.KanbanView">
+        <xpath expr="//t[@t-set-slot='layout-actions']" position="inside">
+            <button class="btn btn-primary d-flex align-items-center" t-on-click="PartnerBarcodeDialog">
+                <i class="fa fa-barcode" style="font-size:24px; margin-right: 8px; color: white;"> </i>
+                <span>Scan Partner</span>
+            </button>
+        </xpath>
+    </t>
+</templates>

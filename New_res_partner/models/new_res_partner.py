@@ -5,6 +5,7 @@ from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
 import logging
 from dateutil.relativedelta import relativedelta
 from odoo.exceptions import ValidationError
+import random,string
 
 _logger = logging.getLogger(__name__)
 class NewResPartner(models.Model):
@@ -84,7 +85,45 @@ class NewResPartner(models.Model):
     security_cutoff_letter=fields.Binary(string="8. 資安通訊保密切結書")
     foreigner_entry_certificate=fields.Binary(string="10. 外籍人士入台證明影本")
     health_commitment=fields.Binary(string="9. 健康承諾書")
+    res_partner_barcode = fields.Char(string='條碼',copy=False)
 
+    _sql_constraints = [
+        ('barcode_uniq', 'unique(res_partner_barcode)', '條碼必須是唯一的!')
+    ]  
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if not vals.get('res_partner_barcode'):
+                vals['res_partner_barcode'] = self._generate_random_barcode()
+        return super().create(vals_list)
+    
+    def _generate_random_barcode(self):
+        # 生成12位隨機數字條碼
+        while True:
+            barcode = ''.join(random.choice(string.digits) for i in range(12))
+            if not self.search([('res_partner_barcode', '=', barcode)]):
+                return barcode
+
+    def generate_random_barcode(self):
+        for partner in self:
+            partner.res_partner_barcode = self._generate_random_barcode()
+
+    @api.model
+    def barcode_search(self, barcode, partner_id):
+        """搜索掃描到的聯絡人條碼"""
+        partner = self.search([
+            ('res_partner_barcode', '=', barcode)
+        ])
+        
+        if not partner:
+            return True
+            
+        if partner.admission == 'no' :
+            return False
+        
+        return partner.admission
+    
     @api.constrains('id_number')
     def _check_id_number(self):
         # 檢查身分證字號是否唯一
@@ -101,7 +140,7 @@ class NewResPartner(models.Model):
         # 更新時檢查身分證字號
         if 'id_number' in vals:
             self._check_id_number()
-        return super(NewResPartner, self).write(vals)
+        return super().write(vals)
 
     @api.depends('industrial_safety_personnel')
     def _compute_industrial_safety_mobile(self):

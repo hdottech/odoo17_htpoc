@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="seq_approval_request_daily" model="ir.sequence">
+            <field name="name">Daily Approval Request Sequence</field>
+            <field name="code">approval.request.daily.sequence</field>
+            <field name="prefix">%(y)s%(month)s%(day)s-</field>
+            <field name="padding">3</field>
+            <field name="number_increment">1</field>
+            <field name="number_next">1</field>
+            <field name="implementation">standard</field>
+            <field name="use_date_range">True</field>
+        </record>
+        <record id="mt_approval_created" model="mail.message.subtype">
+            <field name="name">許可單創建</field>
+            <field name="res_model">approval.request</field>
+            <field name="default" eval="True"/>
+            <field name="description">%(approval_type)s created</field>
+        </record>
+    </data>
+</odoo>

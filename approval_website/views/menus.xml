@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 根菜單 -->
+    <menuitem 
+        id="menu_approval_root"
+        name="審批管理"
+        sequence="10"/>
+
+    <!-- 子菜單 -->
+    <menuitem 
+        id="menu_approval_category"
+        name="審批"
+        parent="menu_approval_root"
+        sequence="10"/>
+
+    <!-- 主管可見的菜單 -->
+    <menuitem 
+        id="menu_approval_pending"
+        name="待審核申請"
+        action="action_approval_pending"
+        parent="menu_approval_category"
+        sequence="10"
+        groups="approval_website.group_approval_manager"/>
+
+    <!-- 管理員可見的菜單 -->
+    <menuitem 
+        id="menu_approval_all"
+        name="所有申請"
+        action="action_approval_all"
+        parent="menu_approval_category"
+        sequence="20"
+        groups="approval_website.group_approval_admin"/>
+</odoo>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_partner_print_badge" model="ir.actions.report">
+        <field name="name">Print Badge</field>
+        <field name="model">res.partner</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">New_res_partner.print_partner_badge</field>
+        <field name="report_file">New_res_partner.print_partner_badge</field>
+        <field name="print_report_name">'Badge - %s' % (object.name).replace('/', '')</field>
+        <field name="binding_model_id" ref="base.model_res_partner"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="print_partner_badge">
+        <t t-call="web.basic_layout">
+            <div class="page">
+                <t t-foreach="docs" t-as="partner">
+                    <div class="col-md-6">
+                        <table style="width:190pt; height:295pt; border: 1pt solid black; border-collapse:separate; border-radius:8pt; margin:1pt">
+                            <!-- Logo 區域 -->
+                            <tr style="height:25%">
+                                <td align="center" valign="center">
+                                    <span t-if="partner.company_id.logo">
+                                        <img t-att-src="image_data_uri(partner.company_id.logo)" 
+                                             style="max-height:50pt;max-width:90%; margin-top:5pt;"
+                                             alt="Company Logo"/>
+                                    </span>
+                                </td>
+                            </tr>
+                            <!-- 聯絡人照片 -->
+                            <tr style="height:40%;">
+                                <td align="center" valign="top">
+                                    <img t-att-src="image_data_uri(partner.image_1920)" 
+                                         style="max-height:110pt;max-width:100%; margin-top:0pt"
+                                         alt="Partner Image"/>
+                                </td>
+                            </tr>
+                            <!-- 聯絡人姓名和職稱 -->
+                            <tr style="height:15%">
+                                <td align="center">
+                                    <div style="font-size:14pt; margin-bottom:2pt;" align="center">
+                                        <span t-field="partner.name"/>
+                                    </div>
+                                    <div align="center" style="font-size:10pt;">
+                                        <span t-field="partner.function"/>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- 條碼 -->
+                            <tr style="height:30%">
+                                <td align="center" valign="bottom">
+                                    <div t-if="partner.res_partner_barcode" 
+                                         t-field="partner.res_partner_barcode" 
+                                         t-options="{
+                                             'widget': 'barcode', 
+                                             'type': 'Code128',
+                                             'width': 1600, 
+                                             'height': 300, 
+                                             'img_style': 'max-height:70pt; max-width:100%; width:100% !important;', 
+                                             'img_align': 'center'
+                                         }"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </t>
+            </div>
+        </t>
+    </template> 
+
+</odoo>

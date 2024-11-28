@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="vendor_form_success" name="Approval Request Success">
+            <t t-call="website.layout">
+                <div class="container">
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="alert alert-success">
+                                <h4 class="alert-heading">申請提交成功！</h4>
+                                <p>您的申請表單已成功提交，待相關人員審核。</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3>申請表單：<span t-field="approval_request.name"/></h3>
+                                    <h5>申請表單號：<span t-field="approval_request.sequence_number"/></h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>申請詳情</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div t-field="approval_request.reason"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4 mb-4">
+                        <div class="col-12 text-center">
+                            <a href="/form_selection" class="btn btn-primary">返回首頁</a>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+    </data>
+</odoo>

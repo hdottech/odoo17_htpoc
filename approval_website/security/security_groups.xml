@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 動作定義 -->
+    <record id="action_approval_pending" model="ir.actions.act_window">
+        <field name="name">待審核申請</field>
+        <field name="res_model">approval.request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('request_status', '=', 'pending')]</field>
+    </record>
+
+    <record id="action_approval_all" model="ir.actions.act_window">
+        <field name="name">所有申請</field>
+        <field name="res_model">approval.request</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- 根菜單 -->
+    <menuitem 
+        id="menu_approval_root"
+        name="審批管理"
+        sequence="10"/>
+
+    <!-- 子菜單 -->
+    <menuitem 
+        id="menu_approval_category"
+        name="審批"
+        parent="menu_approval_root"
+        sequence="10"/>
+
+    <!-- 具體功能菜單 -->
+    <menuitem 
+        id="menu_approval_pending"
+        name="待審核申請"
+        action="action_approval_pending"
+        parent="menu_approval_category"
+        sequence="10"
+        groups="approval_website.group_approval_manager"/>
+
+    <menuitem 
+        id="menu_approval_all"
+        name="所有申請"
+        action="action_approval_all"
+        parent="menu_approval_category"
+        sequence="20"
+        groups="approval_website.group_approval_admin"/>
+
+    <!-- Tree View -->
+    <record id="view_approval_request_tree" model="ir.ui.view">
+        <field name="name">approval.request.tree</field>
+        <field name="model">approval.request</field>
+        <field name="arch" type="xml">
+            <tree decoration-info="request_status == 'pending'" 
+                  decoration-success="request_status == 'approved'"
+                  decoration-danger="request_status == 'refused'">
+                <field name="sequence_number"/>
+                <field name="name"/>
+                <field name="request_owner_id"/>
+                <field name="main_contractor_id"/>
+                <field name="sub_contractor_id"/>
+                <field name="planned_date_begin"/>
+                <field name="planned_date_end"/>
+                <field name="request_status"/>
+                <field name="create_date"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_approval_request_form" model="ir.ui.view">
+        <field name="name">approval.request.form</field>
+        <field name="model">approval.request</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_approve" 
+                            string="批准" 
+                            type="object" 
+                            class="oe_highlight"
+                            attrs="{'invisible': [('can_approve', '=', False)]}"/>
+                    <button name="action_refuse" 
+                            string="退回" 
+                            type="object"
+                            attrs="{'invisible': [('can_approve', '=', False)]}"/>
+                    <field name="request_status" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="sequence_number" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="request_owner_id"/>
+                            <field name="main_contractor_id"/>
+                            <field name="sub_contractor_id"/>
+                            <field name="can_approve" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="planned_date_begin"/>
+                            <field name="planned_date_end"/>
+                            <field name="create_date"/>
+                            <field name="approved_by"/>
+                            <field name="approval_date"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="退回記錄" name="refuse_history">
+                            <field name="refuse_history_ids" readonly="1">
+                                <tree>
+                                    <field name="refuse_date"/>
+                                    <field name="refuse_user_id"/>
+                                    <field name="refuse_reason"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_approval_request_search" model="ir.ui.view">
+        <field name="name">approval.request.search</field>
+        <field name="model">approval.request</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="sequence_number"/>
+                <field name="name"/>
+                <field name="request_owner_id"/>
+                <field name="main_contractor_id"/>
+                <field name="sub_contractor_id"/>
+                <filter string="待審核" name="pending" domain="[('request_status', '=', 'pending')]"/>
+                <filter string="已批准" name="approved" domain="[('request_status', '=', 'approved')]"/>
+                <filter string="已退回" name="refused" domain="[('request_status', '=', 'refused')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="狀態" name="group_by_status" context="{'group_by': 'request_status'}"/>
+                    <filter string="申請人" name="group_by_owner" context="{'group_by': 'request_owner_id'}"/>
+                    <filter string="主承商" name="group_by_main_contractor" context="{'group_by': 'main_contractor_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+</odoo>
