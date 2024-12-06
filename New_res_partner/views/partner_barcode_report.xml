@@ -15,48 +15,47 @@
         <t t-call="web.basic_layout">
             <div class="page">
                 <t t-foreach="docs" t-as="partner">
-                    <div class="col-md-6">
-                        <table style="width:190pt; height:295pt; border: 1pt solid black; border-collapse:separate; border-radius:8pt; margin:1pt">
+                    <div style="width: 50mm; height: 80mm; display: inline-block; page-break-inside: avoid;">
+                        <table style="width: 50mm; height: 80mm; border: 1pt solid black; border-collapse: separate; border-radius: 8pt; margin: 0; padding: 0; table-layout: fixed;">
                             <!-- Logo 區域 -->
-                            <tr style="height:25%">
-                                <td align="center" valign="center">
-                                    <span t-if="partner.company_id.logo">
-                                        <img t-att-src="image_data_uri(partner.company_id.logo)" 
-                                             style="max-height:50pt;max-width:90%; margin-top:5pt;"
-                                             alt="Company Logo"/>
-                                    </span>
+                            <tr style="height: 20mm">
+                                <td align="center" valign="middle" style="padding: 0;">
+                                    <!-- 嘗試多種方式存取公司 logo -->
+                                    <t t-if="partner.company_id">
+                                        <img t-att-src="image_data_uri(partner.company_id.logo)" style="max-height:45pt;max-width:90%" alt="Company Logo"/>
+                                    </t>
                                 </td>
                             </tr>
                             <!-- 聯絡人照片 -->
-                            <tr style="height:40%;">
-                                <td align="center" valign="top">
+                            <tr style="height: 32mm">
+                                <td align="center" valign="middle" style="padding: 0;">
                                     <img t-att-src="image_data_uri(partner.image_1920)" 
-                                         style="max-height:110pt;max-width:100%; margin-top:0pt"
+                                         style="max-height: 30mm; max-width: 90%;"
                                          alt="Partner Image"/>
                                 </td>
                             </tr>
                             <!-- 聯絡人姓名和職稱 -->
-                            <tr style="height:15%">
-                                <td align="center">
-                                    <div style="font-size:14pt; margin-bottom:2pt;" align="center">
+                            <tr style="height: 16mm">
+                                <td align="center" style="padding: 0;">
+                                    <div style="font-size: 12pt; margin-bottom: 1mm;" align="center">
                                         <span t-field="partner.name"/>
                                     </div>
-                                    <div align="center" style="font-size:10pt;">
+                                    <div align="center" style="font-size: 8pt;">
                                         <span t-field="partner.function"/>
                                     </div>
                                 </td>
                             </tr>
                             <!-- 條碼 -->
-                            <tr style="height:30%">
-                                <td align="center" valign="bottom">
+                            <tr style="height: 12mm">
+                                <td align="center" valign="bottom" style="padding: 0;">
                                     <div t-if="partner.res_partner_barcode" 
                                          t-field="partner.res_partner_barcode" 
                                          t-options="{
                                              'widget': 'barcode', 
                                              'type': 'Code128',
-                                             'width': 1600, 
-                                             'height': 300, 
-                                             'img_style': 'max-height:70pt; max-width:100%; width:100% !important;', 
+                                             'width': 500, 
+                                             'height': 150,
+                                             'img_style': 'height: 10mm; width: 90%;', 
                                              'img_align': 'center'
                                          }"/>
                                 </td>
@@ -66,6 +65,6 @@
                 </t>
             </div>
         </t>
-    </template> 
+    </template>
 
 </odoo>
