@@ -44,9 +44,9 @@
                                 <!-- 聯絡人姓名和職稱 -->
                                 <tr style="height: 16mm">
                                     <td align="center" style="padding: 0;">
-                                        <div style="font-size: 12pt;" align="center">
+<!--                                         <div style="font-size: 12pt;" align="center">
                                             <span t-field="partner.parent_id.company_abbreviation"/>
-                                        </div>
+                                        </div> -->
                                         <div style="font-size: 12pt;" align="center">
                                             <span t-field="partner.name"/>
                                         </div>
