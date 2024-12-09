@@ -51,7 +51,7 @@
                                             <span t-field="partner.name"/>
                                         </div>
                                     </td>
-                                </tr>
+                                </tr> 
                                 <!-- 條碼 -->
                                 <tr style="height: 12mm">
                                     <td align="center" valign="bottom" style="padding: 0;">
