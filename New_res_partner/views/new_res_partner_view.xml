@@ -73,9 +73,9 @@
                     <field name="emergency_number" invisible="is_company"/>
                     <field name="address" />
                 </xpath>
-<!--                 <xpath expr="//field[@name='vat']" position="after">
+                <xpath expr="//field[@name='vat']" position="after">
                     <field name="company_abbreviation" invisible="not is_company"/>
-                </xpath> -->
+                </xpath>
 
                 <!-- 在右側group添加字段 -->
                 <xpath expr="//group/group[2]/field[@name='function']" position="replace">
