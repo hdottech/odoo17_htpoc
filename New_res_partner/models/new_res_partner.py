@@ -86,7 +86,7 @@ class NewResPartner(models.Model):
     foreigner_entry_certificate=fields.Binary(string="10. 外籍人士入台證明影本")
     health_commitment=fields.Binary(string="9. 健康承諾書")
     res_partner_barcode = fields.Char(string='條碼',copy=False)
-    # company_abbreviation = fields.Char(string='公司縮寫')
+    company_abbreviation = fields.Char(string='公司縮寫')
 
     _sql_constraints = [
         ('barcode_uniq', 'unique(res_partner_barcode)', '條碼必須是唯一的!')
