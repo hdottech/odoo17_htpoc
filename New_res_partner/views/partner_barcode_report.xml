@@ -21,11 +21,16 @@
                                 <!-- Logo 區域 -->
                                 <tr style="height: 20mm">
                                     <td align="center" valign="middle" style="padding: 0;">
-                                        <t t-if="partner.parent_id">
-                                            <img t-att-src="image_data_uri(partner.parent_id.image_1920)" 
-                                                style="max-height: 18mm; max-width: 90%;"
-                                                alt="Company Logo"/>
-                                        </t>
+                                        <!-- 主公司 logo -->
+                                        <img t-if="res_company.logo"
+                                            t-att-src="image_data_uri(res_company.logo)"
+                                            style="max-height: 18mm; max-width: 90%;"
+                                            alt="Company Logo"/>
+                                        <!-- 如果是分公司，顯示分公司 logo -->
+                                        <img t-if="partner.company_id and partner.company_id.logo and partner.company_id.id != res_company.id"
+                                            t-att-src="image_data_uri(partner.company_id.logo)"
+                                            style="max-height: 18mm; max-width: 90%;"
+                                            alt="Branch Logo"/>
                                     </td>
                                 </tr>
                                 <!-- 聯絡人照片 -->
@@ -39,14 +44,14 @@
                                 <!-- 聯絡人姓名和職稱 -->
                                 <tr style="height: 16mm">
                                     <td align="center" style="padding: 0;">
-                                        <div style="font-size: 12pt; margin-bottom: 1mm;" align="center">
+                                        <div style="font-size: 12pt;" align="center">
+                                            <span t-field="partner.parent_id.company_abbreviation"/>
+                                        </div>
+                                        <div style="font-size: 12pt;" align="center">
                                             <span t-field="partner.name"/>
                                         </div>
-                                        <div align="center" style="font-size: 8pt;">
-                                            <span t-field="partner.function"/>
-                                        </div>
                                     </td>
-                                </tr>
+                                </tr> 
                                 <!-- 條碼 -->
                                 <tr style="height: 12mm">
                                     <td align="center" valign="bottom" style="padding: 0;">
