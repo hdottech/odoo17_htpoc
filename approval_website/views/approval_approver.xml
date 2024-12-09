@@ -26,6 +26,7 @@
                                readonly="not can_edit_user_id or status != 'new'" 
                                force_save="1" 
                                options="{'no_create': True, 'no_edit': True}"/>
+                               
                         <field name="required" readonly="not can_edit" force_save="1"/>
                         <field name="status" decoration-info="status == 'new'"
                                decoration-warning="status in ['pending', 'waiting']"
