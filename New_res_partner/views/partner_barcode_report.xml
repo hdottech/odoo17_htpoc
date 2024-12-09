@@ -24,12 +24,12 @@
                                         <!-- 主公司 logo -->
                                         <img t-if="res_company.logo"
                                             t-att-src="image_data_uri(res_company.logo)"
-                                            style="max-height: 18mm;"
+                                            style="max-height: 18mm; max-width: 90%;"
                                             alt="Company Logo"/>
                                         <!-- 如果是分公司，顯示分公司 logo -->
                                         <img t-if="partner.company_id and partner.company_id.logo and partner.company_id.id != res_company.id"
                                             t-att-src="image_data_uri(partner.company_id.logo)"
-                                            style="max-height: 18mm;"
+                                            style="max-height: 18mm; max-width: 90%;"
                                             alt="Branch Logo"/>
                                     </td>
                                 </tr>
